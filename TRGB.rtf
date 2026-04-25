@@ -1,0 +1,85 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\froman\fcharset0 Times-Roman;\f2\froman\fcharset0 Times-Italic;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid1\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid101\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b\fs24 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 TRGB = Tip of the Red Giant Branch
+\f1\b0 .\
+It's a standard-candle method that exploits a sharp feature in the 
+\f0\b color-magnitude diagram (CMD)
+\f1\b0  of an old stellar population \'97 specifically, the maximum luminosity a low-mass star reaches on the red giant branch just before the 
+\f0\b helium flash
+\f1\b0  ignites core helium burning.\
+
+\f0\b The physics in one breath:
+\f1\b0  A low-mass star (~0.8\'962 M\uc0\u9737 ) ascending the RGB has an inert, electron-degenerate helium core surrounded by a hydrogen-burning shell. As the shell dumps more helium onto the core, the core mass grows and the star climbs the RGB, getting brighter and redder. When the core hits a critical mass of 
+\f0\b ~0.47 M\uc0\u9737 
+\f1\b0 , the temperature reaches ~10\uc0\u8312  K and helium ignites \'97 but because the core is degenerate, the ignition is a runaway thermonuclear flash. The star almost instantly restructures, jumps off the RGB, and lands on the horizontal branch as a quiescent core-He burner, ~2 magnitudes fainter in I-band.\
+The crucial fact: that critical core mass at the helium flash is set by 
+\f0\b degenerate-electron physics
+\f1\b0 , which is 
+\f0\b almost independent of stellar mass, age, and metallicity
+\f1\b0  (as long as the star is old enough that its progenitor was below ~2 M\uc0\u9737  \'97 true for any population older than ~1\'962 Gyr). So the 
+\f0\b maximum I-band luminosity
+\f1\b0  that any old RGB star can reach is essentially a universal constant: 
+\f0\b M_I \uc0\u8776  \u8722 4.05
+\f1\b0  (with small, calibratable metallicity and color corrections).\
+
+\f0\b How you measure it observationally:
+\f1\b0  Take an HST or JWST image of a galaxy's halo (where the population is reliably old and uncontaminated by AGB stars). Build the I-band CMD. Look for the abrupt cutoff at the bright end of the RGB \'97 there will be many stars just below the tip and essentially none just above it (the few above are AGB stars, which have their own physics). The discontinuity is the TRGB. Compare its apparent magnitude to M_I = \uc0\u8722 4.05 \u8594  distance modulus \u8594  distance.\
+
+\f0\b Why TRGB is attractive for H\uc0\u8320  work:
+\f1\b0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls1\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Old, halo populations.
+\f1\b0  Unlike Cepheids (young, in star-forming disks), TRGB stars live in galaxy halos and outskirts where crowding, dust, and metallicity gradients are minimal. The systematics that complicate Cepheid photometry largely don't apply.\
+\ls1\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	2	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Population independence.
+\f1\b0  The flash physics genuinely doesn't care much about progenitor mass or age, which is why TRGB works in 
+\f2\i any
+\f1\i0  old galaxy \'97 including S0 and elliptical SN Ia hosts that Cepheids can't reach.\
+\ls1\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	3	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Single-step calibration.
+\f1\b0  The absolute zero point can be set from the LMC, \uc0\u969  Cen, NGC 4258 (via masers), or Gaia parallaxes to nearby Galactic globular cluster RGB stars. Multiple anchors agree at the few-percent level.\
+\ls1\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	4	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 It's a true edge detection in a CMD,
+\f1\b0  not a fit to a curve \'97 which means the systematics live in tip-detection algorithms (Sobel filters, edge-detection kernels, smoothing scales, color/metallicity corrections) rather than in the underlying stellar physics.\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 Why it's at the center of the Hubble tension debate:
+\f1\b0 \
+TRGB and Cepheids should give the same SN Ia calibration if both ladders are healthy. Instead:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 CCHP
+\f1\b0  (Freedman group) TRGB \uc0\u8594  SN Ia: H\u8320  \u8776  70.4 (Freedman+25)\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 EDD
+\f1\b0  (Tully/Anand) TRGB \uc0\u8594  SN Ia, same data different pipeline: H\u8320  \u8776  71.5\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 SH0ES
+\f1\b0  Cepheids \uc0\u8594  SN Ia (cross-checked with their own TRGB rerun): H\u8320  \u8776  73.0\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Pop-II/SBF
+\f1\b0  (Anand+24b, Jensen+25) using TRGB-anchored SBF: H\uc0\u8320  \u8776  73.8\
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 The TRGB rung itself is producing different answers depending on tip-detection algorithm and SN Ia subset choice \'97 a "same physics, different pipeline" disagreement at the 1\'962 km/s/Mpc level. This is exactly the kind of irreducible systematic that the H0DN paper exists to handle properly via shared-data covariance, rather than treating each TRGB H\uc0\u8320  as an independent measurement and averaging.\
+For your EDE comparison: the TRGB rung is the one place where the local-distance community internally disagrees most visibly. Whether you use 70.4 or 73.8 as the "TRGB H\uc0\u8320 " prior changes the inferred f_EDE noticeably \'97 which is part of why a properly-correlated joint analysis (H0DN-style) is more honest than picking a single TRGB paper to anchor the comparison.\
+}

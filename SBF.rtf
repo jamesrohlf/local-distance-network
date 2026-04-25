@@ -1,0 +1,172 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\froman\fcharset0 Times-Roman;\f2\fnil\fcharset0 AppleSymbols;
+\f3\fnil\fcharset0 LucidaGrande;\f4\froman\fcharset0 Times-Italic;\f5\froman\fcharset0 TimesNewRomanPSMT;
+\f6\fnil\fcharset0 LucidaGrande-Bold;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid1\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid101\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid201\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid301\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid4}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b\fs24 \cf0 \expnd0\expndtw0\kerning0
+SBF = Surface Brightness Fluctuations
+\f1\b0 , a distance indicator developed by 
+\f0\b John Tonry and Donald Schneider in 1988
+\f1\b0 . It's clever, statistical in nature, and methodologically unlike anything else on the H0DN figure \'97 worth understanding because it does real work in the Pop-II route via the TRGB+SBF Project.\
+
+\f0\b The core idea in one breath:
+\f1\b0  the apparent "smoothness" of a galaxy's surface brightness depends on how far away it is. Nearby galaxies look grainy because you can almost resolve individual bright giant stars; distant galaxies look smooth because each pixel averages over thousands of stars and Poisson fluctuations wash out. Quantifying that graininess gives you the distance.\
+
+\f0\b More carefully:
+\f1\b0  Consider a small patch of an elliptical galaxy or bulge containing N stars per pixel, each of mean luminosity 
+\f2 \uc0\u10216 
+\f1 L
+\f2 \uc0\u10217 
+\f1 . The mean surface brightness is N
+\f2 \uc0\u10216 
+\f1 L
+\f2 \uc0\u10217 
+\f1 , but Poisson statistics give pixel-to-pixel fluctuations of \uc0\u8730 N \'b7 
+\f2 \uc0\u10216 
+\f1 L
+\f2 \uc0\u10217 
+\f1 . The variance-to-mean ratio is therefore 
+\f2 \uc0\u10216 
+\f1 L\'b2
+\f2 \uc0\u10217 
+\f1 /
+\f2 \uc0\u10216 
+\f1 L
+\f2 \uc0\u10217 
+\f1 , which is 
+\f0\b independent of N
+\f1\b0  and depends only on the underlying stellar population. Tonry showed this ratio defines a "fluctuation magnitude" \'97 call it $\\bar\{M\}$ \'97 that behaves like an absolute magnitude for the galaxy:\
+$$\\bar\{m\} - \\bar\{M\} = 5\\log d - 5$$\
+So if you know $\\bar\{M\}$ for the stellar population (calibration), you can read off the distance from the measured fluctuation amplitude $\\bar\{m\}$.\
+
+\f0\b What the fluctuations physically come from:
+\f1\b0  Mostly the 
+\f0\b brightest red giant branch and AGB stars
+\f1\b0  in the galaxy's old stellar population. These dominate the variance because the variance is luminosity-weighted \'97 a single bright giant contributes ~10
+\f3 \uc0\u8308 
+\f1 \'d7 more to the fluctuation than a typical main-sequence star. So SBF is fundamentally probing the 
+\f4\i tip of the giant branches
+\f1\i0  in old populations, just sampled statistically rather than star-by-star.\
+
+\f0\b Practical procedure:
+\f1\b0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0\cf0 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+Take a deep image of an early-type galaxy (E/S0/spiral bulge \'97 needs a smooth, old stellar population).\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+Subtract the smooth galaxy model.\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+Measure the residual pixel-to-pixel variance (after carefully subtracting Poisson noise from the sky and from the smooth galaxy itself, and removing globular clusters and background galaxies).\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 {\listtext	4	}\expnd0\expndtw0\kerning0
+The variance has units of (counts)\'b2 per pixel. Convert to a magnitude using the photometric zero point \'97 this is $\\bar\{m\}$.\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 {\listtext	5	}\expnd0\expndtw0\kerning0
+Apply a color-dependent calibration to get $\\bar\{M\}$, then solve for distance.\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 The color dependence is critical and is the largest historical systematic.
+\f1\b0  The fluctuation magnitude depends on the metallicity and age of the stellar population \'97 bluer galaxies have brighter fluctuation stars, redder galaxies have fainter ones. Tonry et al. (2001) established an empirical $\\bar\{M\}_I$ vs $(V-I)$ relation that's been refined many times since (Mei+05, Blakeslee+09 ACSFCS, Cantiello+18, Jensen+21, Blakeslee+21, \'85). The exact slope and zero-point of this calibration is what propagates directly into H
+\f3 \uc0\u8320 
+\f1 .\
+
+\f0\b Strengths for cosmology:
+\f1\b0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+Reaches early-type galaxies.
+\f1\b0  TRGB and Cepheids both prefer late-type/edge-on galaxies for halo or disk access. SBF works best on E/S0 galaxies \'97 a completely different population of SN Ia hosts. This dramatically expands the sample.\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+Statistical, not star-by-star.
+\f1\b0  No need to resolve individual stars, so SBF reaches further per unit telescope aperture than TRGB. With HST/WFC3 it gets out to ~100 Mpc; with JWST, beyond.\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+Works in galaxy clusters.
+\f1\b0  You can measure SBF distances to many galaxies in Fornax, Virgo, Coma, etc., averaging down statistical errors per cluster.\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 Weaknesses:
+\f1\b0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+Calibration is the everything.
+\f1\b0  $\\bar\{M\}$ depends sensitively on stellar population \'97 calibration via TRGB or Cepheids in a few nearby galaxies sets the absolute scale, and any error there propagates linearly.\
+\ls3\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+Globular cluster and background-galaxy contamination
+\f1\b0  must be carefully removed; both contribute spurious variance.\
+\ls3\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+Dust within the target galaxy
+\f1\b0  redistributes light non-uniformly and biases the variance measurement.\
+\ls3\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	4	}\expnd0\expndtw0\kerning0
+Requires very high-S/N imaging
+\f1\b0  with well-characterized PSF \'97 historically an HST job, now JWST.\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 Where SBF lives in the H0DN figure:
+\f1\b0 \
+SBF is the third-rung connector for the 
+\f0\b Pop-II / TRGB+SBF route
+\f1\b0 : TRGB measures distances to a few nearby galaxies in clusters (Fornax via Anand+24b, Virgo via Anand+25); those TRGB distances calibrate the SBF zero-point on the same telescope (HST or JWST); SBF is then applied to a much larger sample of E/S0 galaxies that host SN Ia (and to additional cluster galaxies). The chain is:\
+NGC 4258 maser 
+\f5 \uc0\u8594 
+\f1  TRGB in Fornax/Virgo (Anand+24b/25) 
+\f5 \uc0\u8594 
+\f1  SBF zero-point (Jensen+25) 
+\f5 \uc0\u8594 
+\f1  SBF distances to ~50\'96100 SN Ia hosts 
+\f5 \uc0\u8594 
+\f1  SN Ia Hubble diagram 
+\f5 \uc0\u8594 
+\f1  H
+\f3 \uc0\u8320 
+\f1 \
+The result, 
+\f0\b Jensen et al. 2025: H
+\f6 \uc0\u8320 
+\f0  = 73.8 \'b1 0.7 \'b1 2.3
+\f1\b0  km s
+\f3 \uc0\u8315 
+\f1 \'b9 Mpc
+\f3 \uc0\u8315 
+\f1 \'b9, is the cleanest "Pop-II ladder" answer on the figure, and it's powered by SBF doing the heavy lifting on the third rung.\
+
+\f0\b Two historical SBF results worth knowing about:
+\f1\b0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls4\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Khetan et al. 2021
+\f1\b0  (A&A 647, A72): an HST-based SBF
+\f5 \uc0\u8594 
+\f1 SN Ia ladder calibrated on Cepheids gave H
+\f3 \uc0\u8320 
+\f1  = 70.5 \'b1 4.1 (later 71.1 with revised systematics). This was an earlier, lower-statistics version of what Jensen+25 now does much better with JWST + TRGB anchoring.\
+\ls4\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Blakeslee et al. 2021
+\f1\b0 : SBF distances to 63 galaxies within 100 Mpc, calibrated on Cepheids, gave H
+\f3 \uc0\u8320 
+\f1  = 73.3 \'b1 2.5.\
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 Note these earlier values used 
+\f0\b Cepheid
+\f1\b0  calibration of SBF (i.e., a Pop-I 
+\f5 \uc0\u8594 
+\f1  Pop-II handoff), while Jensen+25 uses 
+\f0\b TRGB
+\f1\b0  calibration (Pop-II all the way down to the maser anchor). The former gives a Pop-I/Pop-II hybrid; the latter is "pure Pop-II" \'97 and they agree, which is itself a useful internal cross-check that the SBF zero point is robust against the calibrator choice.\
+}

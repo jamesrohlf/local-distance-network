@@ -1,0 +1,233 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\froman\fcharset0 Times-Roman;\f2\froman\fcharset0 Times-Italic;
+\f3\fnil\fcharset0 LucidaGrande;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid1\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid101\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid201\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid3}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b\fs24 \cf0 \expnd0\expndtw0\kerning0
+TF = Tully\'96Fisher relation
+\f1\b0 , the spiral-galaxy analog of the Fundamental Plane. Discovered by 
+\f0\b R. Brent Tully and J. Richard Fisher in 1977
+\f1\b0  (
+\f2\i A&A
+\f1\i0  54, 661) \'97 it's the older and arguably more famous of the two, with nearly five decades of use as the workhorse distance indicator for spirals.\
+
+\f0\b The core relation in one breath:
+\f1\b0  the 
+\f0\b luminosity
+\f1\b0  of a spiral galaxy correlates tightly with its 
+\f0\b rotational velocity
+\f1\b0 :\
+$$L \\propto V_\{\\rm rot\}^\{\\alpha\}$$\
+where the slope $\\alpha$ depends on the photometric band \'97 historically ~3 in B-band, steepening to ~3.5\'964 in the near-IR (where it's tightest). Equivalently, in magnitude form:\
+$$M = a \\log W + b$$\
+with $W$ being the H I 21 cm line width (which directly traces $2 V_\{\\rm rot\} \\sin i$). Calibrate the slope $a$ and zero point $b$ on galaxies of known distance, then for any other spiral with measurable $W$ and apparent magnitude, compute $M$ from $W$, and the distance modulus drops out.\
+
+\f0\b Why the relation exists physically:
+\f1\b0  Hand-wavy version starts from virial equilibrium plus the assumption that spirals form a near-homologous family. For a self-gravitating disk in equilibrium, $V^2 \\sim GM/R$. If mass-to-light ratio $M/L$ is roughly constant and surface brightness is roughly constant across the spiral sequence (a reasonable approximation), you get $L \\propto V^4$ \'97 the Tully\'96Fisher relation in the near-IR is essentially the "baryonic Tully\'96Fisher" prediction once you swap luminosity for stellar mass.\
+The deeper version invokes the 
+\f0\b dark matter halo connection
+\f1\b0 : $V_\{\\rm rot\}$ at large radii is set by the halo, while $L$ is set by the baryons. The remarkable tightness of TF (~0.3 mag scatter in the IR, ~0.5 mag in B) tells you that baryonic mass and halo mass are linked by a near-deterministic function across galaxies \'97 one of the empirical pillars of the modern galaxy formation framework.\
+
+\f0\b Practical procedure:
+\f1\b0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+Imaging
+\f1\b0  \'97 get optical or (better) near-IR photometry of the target spiral. Measure total apparent magnitude and the 
+\f0\b inclination
+\f1\b0  $i$ from axis ratio.\
+\ls1\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+H I observation
+\f1\b0  \'97 get a 21 cm spectrum (single-dish like Arecibo/GBT, or interferometric like ALFALFA/WALLABY). Measure the line width $W_\{50\}$ (width at 50% of peak) or $W_\{20\}$ (at 20%).\
+\ls1\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+Inclination correction
+\f1\b0  \'97 divide the observed line width by $\\sin i$ to recover $2 V_\{\\rm rot\}$.\
+\ls1\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	4	}\expnd0\expndtw0\kerning0
+Internal extinction correction
+\f1\b0  \'97 correct apparent magnitude for dust within the galaxy (depends on inclination and morphology).\
+\ls1\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	5	}\expnd0\expndtw0\kerning0
+K-correction and Galactic extinction
+\f1\b0  \'97 standard.\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0\cf0 \kerning1\expnd0\expndtw0 {\listtext	6	}\expnd0\expndtw0\kerning0
+Plug corrected magnitude and corrected line width into the calibrated TF relation; read off distance modulus.\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 Strengths for cosmology:
+\f1\b0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+Reaches huge samples cheaply.
+\f1\b0  H I observations and optical/IR photometry are widely available; you can build catalogs of tens of thousands of galaxies. CF4's TF subset has ~10,000.\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+Spirals are everywhere.
+\f1\b0  Unlike ellipticals (which cluster preferentially in dense environments), spirals populate field, group, and outer-cluster environments uniformly \'97 TF samples the velocity field where peculiar velocities are smaller and more representative.\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+Each measurement is cheap
+\f1\b0  \'97 a 21 cm detection plus a single image is enough; you don't need spectroscopic resolution to get $\\sigma$ like in FP.\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	4	}\expnd0\expndtw0\kerning0
+Reaches into the Hubble flow.
+\f1\b0  TF works out to ~15,000 km/s with H I (with the inevitable selection bias toward H I-rich galaxies at large distance).\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 Weaknesses:
+\f1\b0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+~15\'9620% per-galaxy distance scatter
+\f1\b0  \'97 much larger than SN Ia, so you need large samples.\
+\ls3\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+Inclination is the dominant nuisance parameter.
+\f1\b0  Face-on galaxies ($\\sin i \\to 0$) produce divergent corrections to line width; nearly edge-on galaxies are easier on the velocity correction but harder on the dust correction. Both extremes are usually thrown out, costing sample size.\
+\ls3\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+Calibration zero-point is everything
+\f1\b0 , just like FP. Calibrators are TF galaxies with independent distances from Cepheids, TRGB, or SBF. Differences in which calibrator set you use shift the zero-point at the ~few-percent level \'97 and you saw this propagate in our earlier CF4 discussion (Kourkchi+20 vs Tully+23 vs Boubel+24, all using essentially the same TF data).\
+\ls3\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	4	}\expnd0\expndtw0\kerning0
+Malmquist bias
+\f1\b0  is severe at the magnitude-limited end \'97 at large distances you see only the brightest spirals, biasing the distance estimates toward small values unless carefully corrected.\
+\ls3\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 {\listtext	5	}\expnd0\expndtw0\kerning0
+H I selection bias.
+\f1\b0  Quenched or H I\'96poor spirals (especially in cluster cores) drop out of TF samples; this distorts the mapping from "spirals" to "the velocity field."\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 Where TF lives in the H0DN figure:
+\f1\b0 \
+TF is the long, cheap pipeline from anchors all the way out to ~15,000 km/s, calibrated by a handful of nearby spirals with Cepheid or TRGB distances. It's primarily a third-rung tracer like FP, but the 
+\f2\i much larger
+\f1\i0  sample makes it the dominant source of statistical leverage in the Hubble-flow regime. The H0DN figure shows TF feeding from above (Cepheid + TRGB calibrators) and connecting outward to the largest velocity volumes.\
+
+\f0\b The TF\'96FP complementarity:
+\f1\b0 \
+The two methods are best understood as a matched pair:\
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrt\brdrnil \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2052\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth2976\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth3659\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+
+\f0\b \cf0 \cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 TF (spirals)\cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 FP (ellipticals)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2052\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth2976\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth3659\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+
+\f1\b0 \cf0 Tracer\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Late-type, gas-rich\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Early-type, gas-poor\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2052\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth2976\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth3659\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Velocity proxy\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 $V_\{\\rm rot\}$ from H I 21 cm\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 $\\sigma$ from absorption-line spectra\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2052\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth2976\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth3659\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Size proxy\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Total magnitude\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Effective radius $R_e$\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2052\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth2976\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth3659\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Calibration source\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Cepheids / TRGB\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 SBF\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2052\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth2976\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth3659\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Best environments\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Field, groups, cluster outskirts\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Cluster cores\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2052\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth2976\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth3659\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Per-galaxy scatter\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~15\'9620%\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~20\'9625%\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2052\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth2976\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth3659\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Sample size (current)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~10
+\f3 \uc0\u8308 
+\f1  (CF4, WALLABY)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~10
+\f3 \uc0\u8310 
+\f1  (DESI)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrt\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2052\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth2976\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth3659\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Reach\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~15,000 km/s\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~30,000+ km/s\cell \lastrow\row
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 Together they give you redundant access to the Hubble flow with 
+\f0\b completely different systematic dependencies
+\f1\b0  \'97 different host morphologies, different calibration chains, different inclination/aperture nuisances, different selection effects. The H0DN paper's framework uses both to provide a Hubble-flow constraint that's robust against either method's individual failure modes.\
+}

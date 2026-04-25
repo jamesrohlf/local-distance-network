@@ -1,0 +1,488 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Roman;\f1\fnil\fcharset0 LucidaGrande;\f2\froman\fcharset0 Times-Bold;
+\f3\froman\fcharset0 Times-Italic;\f4\fnil\fcharset0 LucidaGrande-Bold;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\fs24 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Cosmicflows-4, the fourth release in Brent Tully's long-running compilation, ~56,000 galaxies with the Tully\'96Fisher subset providing the dominant H
+\f1 \uc0\u8320 
+\f0  leverage at 75.1 \'b1 0.2 stat \'b1 3 sys) and the historical arc through CF1\'96CF3. Now that we've worked through Tully\'96Fisher, the Fundamental Plane, Pop-II, and the broader H0DN landscape, let me give you the deeper picture: what makes CF4 conceptually distinctive, why it sits where it does in the network.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f2\b\fs36 \cf0 What CF4 actually is \'97 beyond the catalog description\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b0\fs24 \cf0 The trap when discussing CF4 is treating it like just another distance compilation. It's not. CF4 is a 
+\f2\b velocity-field reconstruction enterprise
+\f0\b0  that happens to produce H
+\f1 \uc0\u8320 
+\f0  as a byproduct.\
+The conceptual structure goes like this:\
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 Galaxies have measured 
+\f2\b redshifts
+\f0\b0  $cz_\{\\rm obs\}$, which decompose into 
+\f2\b Hubble flow
+\f0\b0  ($H_0 d$) plus 
+\f2\b peculiar velocity
+\f0\b0  ($v_p$). If you measure $d$ independently (via TF, FP, SBF, TRGB, etc.) and you know $cz_\{\\rm obs\}$, you get $v_p$ \'97 and the 
+\f3\i map
+\f0\i0  of $v_p$ across many galaxies reconstructs the gravitationally-induced velocity field of the local universe.\
+Cosmicflows is fundamentally about that map. The Laniakea Supercluster (Tully+14), the Dipole Repeller (Hoffman+17), the Shapley Concentration's gravitational influence on local kinematics \'97 all these are CF-program science products. The H
+\f1 \uc0\u8320 
+\f0  measurement is not the headline result of CF4 in Tully's framing; it's a calibration step required to do the mapping correctly.\
+This matters for how to interpret CF4-derived H
+\f1 \uc0\u8320 
+\f0  values:\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b \cf0 1. The H
+\f4 \uc0\u8320 
+\f2  value depends on getting the velocity field right.
+\f0\b0  If your peculiar-velocity model is biased, your H
+\f1 \uc0\u8320 
+\f0  is biased. CF4's reconstruction iterates between distance estimates and PV models, with significant feedback between the two.\
+
+\f2\b 2. CF4 internally constrains H
+\f4 \uc0\u8320 
+\f2  very tightly statistically.
+\f0\b0  With ~10,000 galaxies in the TF subset, the formal statistical error on H
+\f1 \uc0\u8320 
+\f0  is \'b10.2 \'97 but this assumes the PV model is correctly subtracted. The realistic \'b13 systematic is dominated by uncertainty in the PV model and in the TF zero point, not by any per-galaxy distance scatter.\
+
+\f2\b 3. The CF4 H
+\f4 \uc0\u8320 
+\f2  is a Hubble-flow zero-point measurement, not a single-rung calibration.
+\f0\b0  When the catalog reports "H
+\f1 \uc0\u8320 
+\f0  = 75.1," what it means physically is "the asymptotic value of $cz/d$ in the limit of large $d$, where peculiar velocities average out." This is conceptually different from SH0ES's "H
+\f1 \uc0\u8320 
+\f0  from the SN Ia Hubble diagram zero point" \'97 both are valid definitions of H
+\f1 \uc0\u8320 
+\f0 , but the CF4 version directly couples H
+\f1 \uc0\u8320 
+\f0  to the assumed PV field structure.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f2\b\fs36 \cf0 The CF4 distance compilation at the rung level\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b0\fs24 \cf0 CF4 isn't a single-method measurement \'97 it integrates multiple distance indicators, each with its own zero-point calibration. The full breakdown:\
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrt\brdrnil \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth800\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2160
+\clvertalc \clshdrawnil \clwWidth3066\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx4320
+\clvertalc \clshdrawnil \clwWidth1706\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6480
+\clvertalc \clshdrawnil \clwWidth3452\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+
+\f2\b \cf0 Subset\cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 Method\cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 N galaxies (CF4)\cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 Method-internal H
+\f4 \uc0\u8320 
+\f2 \cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth800\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2160
+\clvertalc \clshdrawnil \clwWidth3066\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx4320
+\clvertalc \clshdrawnil \clwWidth1706\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6480
+\clvertalc \clshdrawnil \clwWidth3452\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+
+\f0\b0 \cf0 TF\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Tully\'96Fisher (spirals)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~9,800\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 75.1 \'b1 0.2 stat (Kourkchi+20)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth800\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2160
+\clvertalc \clshdrawnil \clwWidth3066\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx4320
+\clvertalc \clshdrawnil \clwWidth1706\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6480
+\clvertalc \clshdrawnil \clwWidth3452\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 FP\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Fundamental Plane (E/S0)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~28,000\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 (used for PV; see Said+20)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth800\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2160
+\clvertalc \clshdrawnil \clwWidth3066\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx4320
+\clvertalc \clshdrawnil \clwWidth1706\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6480
+\clvertalc \clshdrawnil \clwWidth3452\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 SBF\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Surface Brightness Fluctuations\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~280\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~73 (per Khetan+21, Blakeslee+21)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth800\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2160
+\clvertalc \clshdrawnil \clwWidth3066\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx4320
+\clvertalc \clshdrawnil \clwWidth1706\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6480
+\clvertalc \clshdrawnil \clwWidth3452\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 SN Ia\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Type Ia supernovae\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~1,300\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~73 (Pantheon+ subset)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth800\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2160
+\clvertalc \clshdrawnil \clwWidth3066\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx4320
+\clvertalc \clshdrawnil \clwWidth1706\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6480
+\clvertalc \clshdrawnil \clwWidth3452\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 TRGB\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Tip of the Red Giant Branch\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~480\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~71 (multiple sources)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth800\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2160
+\clvertalc \clshdrawnil \clwWidth3066\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx4320
+\clvertalc \clshdrawnil \clwWidth1706\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6480
+\clvertalc \clshdrawnil \clwWidth3452\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Cepheid\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Classical Cepheids\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~75\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~73 (SH0ES subset)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrt\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth800\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2160
+\clvertalc \clshdrawnil \clwWidth3066\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx4320
+\clvertalc \clshdrawnil \clwWidth1706\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6480
+\clvertalc \clshdrawnil \clwWidth3452\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 SNII\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 SCM applied to Type II SN\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~96\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~75 (de Jaeger+22 calibrators)\cell \lastrow\row
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 The catalog homogenizes all of these to a common zero-point \'97 a non-trivial calibration step that involves cross-comparing distances to galaxies measured by multiple methods and adjusting individual methods' zero points to bring them into agreement.\
+The combined CF4 H
+\f1 \uc0\u8320 
+\f0  from Tully+23 (using all methods, weighted by per-galaxy precision) is 
+\f2\b 74.6 \'b1 0.8 (stat) \'b1 3.0 (sys)
+\f0\b0 . The per-method values feed into this with weights determined by sample size, scatter, and assumed independence.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f2\b\fs36 \cf0 Why the CF4 H
+\f4 \uc0\u8320 
+\f2  is hard to interpret cleanly\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b0\fs24 \cf0 Three issues that make the headline CF4 H
+\f1 \uc0\u8320 
+\f0  value harder to use than it looks:\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b \cf0 1. The CF4 zero-point is internal, not external.
+\f0\b0  The catalog's TF zero point is calibrated by tying TF-distance galaxies to the small subset that also have Cepheid or TRGB distances. Different choices about which calibrators to anchor to (Cepheid-only vs Cepheid+TRGB vs full subset) shift the CF4 H
+\f1 \uc0\u8320 
+\f0  by ~1 km/s/Mpc. Boubel+24 reanalyzed the same TF data with Cepheid-only anchoring and got H
+\f1 \uc0\u8320 
+\f0  = 73.3 \'b1 2.1 (stat) \'b1 3.5 (sys), versus K20's 75.1 \'b1 0.2 (stat) \'b1 3 (sys). Same data, different anchoring choice, ~1.8 km/s/Mpc difference.\
+
+\f2\b 2. Dependence on the PV model.
+\f0\b0  The local PV field has structure on scales ranging from individual cluster infall (Virgo) to the Shapley Concentration's tidal influence (~30 Mpc/h). CF4 assumes a particular PV model in solving for distances; using a different PV model (e.g., 2M++, the SDSS reconstruction, or the no-correction Pesce-style approach) shifts H
+\f1 \uc0\u8320 
+\f0  by ~2 km/s/Mpc. This is a real systematic, not a small effect.\
+
+\f2\b 3. The "stat vs sys" decomposition is generous to the systematic.
+\f0\b0  \'b10.2 statistical with \'b13 systematic is the kind of error budget where the central value is essentially defined by the systematic \'97 the \'b10.2 is illusory in any practical sense. For purposes of comparing to other H
+\f1 \uc0\u8320 
+\f0  measurements, treat CF4 as 
+\f2\b 75 \'b1 3
+\f0\b0  and ignore the inner statistical error bar.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f2\b\fs36 \cf0 CF4 in the H0DN figure\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b0\fs24 \cf0 CF4 is the right-hand portion of the network \'97 the 
+\f2\b Hubble-flow extension
+\f0\b0  that goes far beyond where SN Ia samples reach efficiently. SN Ia in calibrated rung-2 hosts get you out to maybe ~10,000 km/s. TF/FP/SBF in CF4 reach 15,000+ km/s for TF and ~30,000 km/s for FP. This extends the Hubble-flow lever arm dramatically.\
+But the H0DN figure is careful to note that 
+\f2\b CF4 results don't dominate the H
+\f4 \uc0\u8320 
+\f2  inference
+\f0\b0 , despite their large sample sizes. The reason: they have larger systematic errors per galaxy than SN Ia methods, so even with vastly more galaxies they don't beat SN Ia statistically. A method that goes from "10
+\f1 \uc0\u8308 
+\f0  TF measurements at 20% per-galaxy scatter" to "10\'b3 SN Ia at 7% per-galaxy scatter" gives the 
+\f3\i same
+\f0\i0  statistical precision, and the SN Ia have much smaller systematics.\
+What CF4 
+\f3\i does
+\f0\i0  contribute to the H0DN inference:\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b \cf0 1. PV-field characterization.
+\f0\b0  CF4's PV map is used to correct other methods (especially MCP, where six galaxies are not enough to internally average over PVs). In this role, CF4 is a calibration input rather than an H
+\f1 \uc0\u8320 
+\f0  measurement per se.\
+
+\f2\b 2. A different lever arm.
+\f0\b0  CF4 reaches Hubble flow at higher z than SN Ia samples, and uses TF spirals + FP ellipticals \'97 completely different host samples than SN Ia. If CF4 H
+\f1 \uc0\u8320 
+\f0  were systematically 
+\f3\i low
+\f0\i0  relative to SN Ia, this would be a smoking gun for SN Ia\'96specific systematics. It isn't (CF4 is high, ~75); the consistency adds another point of robustness.\
+
+\f2\b 3. Additional robustness checks.
+\f0\b0  CF4's combination with SBF and TRGB at the calibration step gives an internally homogenized distance compilation that the H0DN paper uses in some of its variant analyses.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f2\b\fs36 \cf0 CF4 vs the rest of the local H
+\f4 \uc0\u8320 
+\f2  measurements\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b0\fs24 \cf0 Putting CF4 in context:\
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrt\brdrnil \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2111\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx1728
+\clvertalc \clshdrawnil \clwWidth1409\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx3456
+\clvertalc \clshdrawnil \clwWidth4119\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5184
+\clvertalc \clshdrawnil \clwWidth1916\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6912
+\clvertalc \clshdrawnil \clwWidth2193\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+
+\f2\b \cf0 Method\cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 Best H
+\f4 \uc0\u8320 
+\f2  value\cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 Independence from SN Ia\cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 Hubble-flow reach\cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 Per-method precision\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2111\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx1728
+\clvertalc \clshdrawnil \clwWidth1409\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx3456
+\clvertalc \clshdrawnil \clwWidth4119\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5184
+\clvertalc \clshdrawnil \clwWidth1916\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6912
+\clvertalc \clshdrawnil \clwWidth2193\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 SH0ES
+\f0\b0 \cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 73.04 \'b1 1.04\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 No (uses SN Ia rung 3)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~30,000 km/s\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 1.4%\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2111\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx1728
+\clvertalc \clshdrawnil \clwWidth1409\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx3456
+\clvertalc \clshdrawnil \clwWidth4119\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5184
+\clvertalc \clshdrawnil \clwWidth1916\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6912
+\clvertalc \clshdrawnil \clwWidth2193\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+
+\f2\b \cf0 CCHP
+\f0\b0 \cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 70.39 \'b1 1.87\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 No (uses SN Ia rung 3)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~30,000 km/s\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 2.7%\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2111\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx1728
+\clvertalc \clshdrawnil \clwWidth1409\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx3456
+\clvertalc \clshdrawnil \clwWidth4119\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5184
+\clvertalc \clshdrawnil \clwWidth1916\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6912
+\clvertalc \clshdrawnil \clwWidth2193\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+
+\f2\b \cf0 Pop-II via SBF
+\f0\b0 \cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 73.8 \'b1 2.4\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 No (uses SN Ia rung 3)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~30,000 km/s\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 3.2%\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2111\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx1728
+\clvertalc \clshdrawnil \clwWidth1409\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx3456
+\clvertalc \clshdrawnil \clwWidth4119\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5184
+\clvertalc \clshdrawnil \clwWidth1916\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6912
+\clvertalc \clshdrawnil \clwWidth2193\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+
+\f2\b \cf0 MCP
+\f0\b0 \cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 73.9 \'b1 3.0\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Yes (geometric, no SN Ia)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Up to ~10,000 km/s\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 4.1%\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2111\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx1728
+\clvertalc \clshdrawnil \clwWidth1409\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx3456
+\clvertalc \clshdrawnil \clwWidth4119\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5184
+\clvertalc \clshdrawnil \clwWidth1916\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6912
+\clvertalc \clshdrawnil \clwWidth2193\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+
+\f2\b \cf0 adh0cc
+\f0\b0 \cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~75 \'b1 2\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Yes (SN II, no SN Ia)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Up to ~30,000 km/s\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 2.7%\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2111\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx1728
+\clvertalc \clshdrawnil \clwWidth1409\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx3456
+\clvertalc \clshdrawnil \clwWidth4119\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5184
+\clvertalc \clshdrawnil \clwWidth1916\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6912
+\clvertalc \clshdrawnil \clwWidth2193\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+
+\f2\b \cf0 CF4 (TF dominated)
+\f0\b0 \cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 75 \'b1 3\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Partial (TF on its own; SN Ia in combined)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~15,000 km/s\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 4.0%\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrt\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth2111\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx1728
+\clvertalc \clshdrawnil \clwWidth1409\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx3456
+\clvertalc \clshdrawnil \clwWidth4119\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5184
+\clvertalc \clshdrawnil \clwWidth1916\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx6912
+\clvertalc \clshdrawnil \clwWidth2193\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+
+\f2\b \cf0 DESI FP
+\f0\b0 \cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~76 \'b1 2.5\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Yes for FP itself; SBF-anchored\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~30,000 km/s\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 3.3%\cell \lastrow\row
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 CF4 sits at high H
+\f1 \uc0\u8320 
+\f0  alongside MCP, adh0cc, and DESI FP \'97 the methods that are 
+\f2\b not
+\f0\b0  primarily SN Ia\'96anchored. This pattern is meaningful: methods that don't share the SN Ia rung consistently land at ~74\'9676, while methods that do share the SN Ia rung land at ~73 (SH0ES) or ~70 (CCHP).\
+The interpretive question this raises: is the SN Ia rung pulling the SH0ES result 
+\f3\i down
+\f0\i0  slightly relative to the other methods, or is the non-SN Ia rung systematically slightly high due to PV systematics or zero-point drift? The H0DN paper handles this in its covariance machinery; for your purposes, the takeaway is that the methods cluster within ~3 km/s/Mpc of each other, and 
+\f3\i all
+\f0\i0  are inconsistent with Planck.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f2\b\fs36 \cf0 The CF4 / Cosmicflows series in the bigger picture\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b0\fs24 \cf0 A useful conceptual frame: 
+\f2\b the Cosmicflows program is the closest thing in the H
+\f4 \uc0\u8320 
+\f2  debate to what CMB experiments are at the early-time end
+\f0\b0  \'97 large-volume statistical sampling of the universe's velocity structure, with H
+\f1 \uc0\u8320 
+\f0  as one extracted parameter from a much broader analysis. Just as Planck doesn't really measure H
+\f1 \uc0\u8320 
+\f0  directly but rather extracts it from a global fit to the CMB power spectrum, CF4 doesn't really measure H
+\f1 \uc0\u8320 
+\f0  directly but extracts it from the global fit to the local velocity field.\
+This means CF4's failure modes are more like Planck's failure modes (parametric model assumptions, residual modeling errors at large scales) than like SH0ES's failure modes (per-rung systematic at one specific calibration step). Different epistemological flavor, even though both nominally measure H
+\f1 \uc0\u8320 
+\f0 .\
+For the H
+\f1 \uc0\u8320 
+\f0  tension specifically, this is a useful framing: if you trust both Planck's and CF4's parametric reconstructions equally, you'd note that they disagree (67 vs 75). The disagreement is roughly the same magnitude as the tension. This is a "global model" vs "global model" comparison that's complementary to the SH0ES vs Planck "rung-by-rung" comparison.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f2\b\fs36 \cf0 Recent and upcoming developments\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b0\fs24 \cf0 CF4's near-term evolution:\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b \cf0 1. WALLABY
+\f0\b0  \'97 the ASKAP Wide-field ASKAP L-band Legacy All-sky Blind surveY. WALLABY is producing H I distance measurements for ~10
+\f1 \uc0\u8309 
+\f0  spirals over the southern sky, ~10\'d7 the CF4 TF sample. First results (Courtois+24, Said+24) suggest TF zero points consistent with CF4 within errors but tighten the systematic floor. The WALLABY-era TF H
+\f1 \uc0\u8320 
+\f0  should reach ~75 \'b1 1.5\'962 once final calibration is settled.\
+
+\f2\b 2. DESI Peculiar Velocity Survey
+\f0\b0  \'97 DESI's spectroscopy is providing FP measurements for ~10
+\f1 \uc0\u8310 
+\f0  early-type galaxies, the largest FP sample ever. Said+25 reports H
+\f1 \uc0\u8320 
+\f0  = 76.05 \'b1 0.35 (stat) \'b1 1.5 (sys) \'97 comparable in precision to SH0ES. This is a big deal: the FP H
+\f1 \uc0\u8320 
+\f0  has gone from being a noisy cross-check to a comparably precise standalone measurement.\
+
+\f2\b 3. 4HS (4MOST Hemisphere Survey)
+\f0\b0  \'97 the southern-hemisphere counterpart to DESI for FP work, coming online ~2025\'962027.\
+The CF4 era is transitioning to a "PV survey era" where TF and FP samples are entering Planck-like sample sizes. The H
+\f1 \uc0\u8320 
+\f0  leverage is going to come increasingly from this direction rather than from ladder-based methods, and the question of whether CF/PV-anchored H
+\f1 \uc0\u8320 
+\f0  values converge on SH0ES (73) or on something higher (75\'9676) will be increasingly answerable.\
+}

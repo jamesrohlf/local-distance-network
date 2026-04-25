@@ -1,0 +1,263 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\froman\fcharset0 Times-Roman;\f2\froman\fcharset0 Times-Italic;
+\f3\fnil\fcharset0 LucidaGrande;\f4\fnil\fcharset0 LucidaGrande-Bold;\f5\froman\fcharset0 Times-BoldItalic;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid101\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid201\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid301\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid4}
+{\list\listtemplateid5\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid401\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid5}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b\fs24 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 EPM = Expanding Photosphere Method
+\f1\b0 , a geometric distance technique for 
+\f0\b Type II supernovae
+\f1\b0  (specifically Type II-P, the plateau subtype). Originally developed by 
+\f0\b Robert Kirshner and John Kwan in 1974
+\f1\b0  as a modern incarnation of the 
+\f0\b Baade\'96Wesselink method
+\f1\b0  (Walter Baade 1926, Adriaan Wesselink 1946) that was first used to measure radii of pulsating Cepheids and RR Lyrae.\
+
+\f0\b The core idea in one breath:
+\f1\b0  if you can measure the 
+\f2\i physical radius
+\f1\i0  of an expanding sphere and its 
+\f2\i angular radius
+\f1\i0  on the sky simultaneously, the ratio gives you the distance. No standard candle, no calibrator, no rung-stacking \'97 just elementary geometry.\
+For an SN II-P during its plateau phase:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls1\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Physical radius
+\f1\b0 : the photosphere is moving outward at well-defined velocity $v_\{\\rm phot\}$ that you can measure from the 
+\f0\b blueshift of weak metal absorption lines
+\f1\b0  (Fe II \uc0\u955 5169 is the workhorse \'97 chosen because it's optically thin enough to trace the photosphere itself rather than overlying high-velocity ejecta). After explosion time $t$, the radius is simply $R(t) = v_\{\\rm phot\} \\cdot t$ (for a freely expanding ejecta, which is an excellent approximation by ~day 10).\
+\ls1\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Angular radius
+\f1\b0 : from the observed flux $f_\\lambda$ and an assumed photospheric temperature $T$, the angular size $\\theta$ follows from $f_\\lambda = \\theta^2 \\pi B_\\lambda(T) \\cdot \\zeta^2$, where $B_\\lambda$ is the blackbody Planck function and $\\zeta$ is a 
+\f0\b dilution factor
+\f1\b0  correcting for the fact that an SN II atmosphere isn't a true blackbody (electron scattering makes it more transparent than a blackbody at the photosphere temperature, so the emergent flux per unit area is 
+\f2\i less
+\f1\i0  than $\\pi B_\\lambda$).\
+\ls1\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Distance
+\f1\b0 : $D = R/\\theta$.\
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 In practice you take observations at multiple epochs during the plateau, fit a line to $\\theta(t)$ vs $v_\{\\rm phot\} \\cdot t$, and the slope is $1/D$ \'97 the multi-epoch fit also automatically yields the 
+\f0\b explosion time
+\f1\b0  as a bonus.\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 The trouble with classical EPM: the dilution factor.
+\f1\b0 \
+The whole game is in $\\zeta$. Early implementations (Eastman, Schmidt & Kirshner 1996; Hamuy et al. 2001; Dessart & Hillier 2005; Jones et al. 2009) used 
+\f0\b pre-computed grids of synthetic atmospheres
+\f1\b0  \'97 typically Eastman's NLTE radiative transfer models \'97 to tabulate $\\zeta$ as a function of color temperature in a few standard photometric bandpasses. You'd measure the SN's color temperature, look up $\\zeta$ from the grid, and apply it.\
+This worked, but the systematic uncertainty was 
+\f0\b substantial and hard to quantify
+\f1\b0 . The issues:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Different model grids gave different $\\zeta$.
+\f1\b0  EK96 vs Dessart\'96Hillier vs Jones+09 disagreed by 10\'9620%, propagating directly into 10\'9620% distance uncertainty.\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	2	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 The grids assumed fixed compositions and density profiles
+\f1\b0  that don't necessarily match real SNe.\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	3	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 The dilution factor is bandpass-dependent
+\f1\b0 , so the choice of which photometric bands to use mattered.\
+\ls2\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	4	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 No way to tell from the data which model was right
+\f1\b0  for any given SN.\
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 EPM in its classical form gave H
+\f3 \uc0\u8320 
+\f1  \uc0\u8776  70\'9675 with ~10% systematic floor \'97 useful as an independent check but not competitive with the SN Ia distance ladder.\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 The modern revival: tailored EPM (Vogl et al.).
+\f1\b0 \
+The breakthrough is doing the radiative transfer 
+\f0\b per-spectrum, self-consistently
+\f1\b0 , instead of relying on a generic grid. 
+\f0\b Vogl et al. 2019, 2020, 2024, 2025
+\f1\b0  uses 
+\f0\b TARDIS
+\f1\b0  \'97 a Monte Carlo NLTE radiative transfer code \'97 to fit the full observed spectrum of each individual SN II at each epoch, with the photospheric properties (density profile, composition, velocity, temperature) treated as fit parameters. The output is a self-consistent model that simultaneously matches all the spectral features.\
+Once you have the matched model, you read off the photospheric radius and the model luminosity directly \'97 no dilution factor, no grid interpolation, no bandpass assumptions. The distance falls out from the angular size implied by matching the model spectrum's normalization to the observed flux.\
+This eliminates the classical EPM systematic floor:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Per-SN distance precision: ~5% (vs ~15% classical)\
+\ls3\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Cross-method consistency between independent SN II analyses: now at the few-percent level\
+\ls3\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 The H0DN-relevant result, 
+\f0\b adh0cc
+\f1\b0  (Vogl+25), gives 
+\f0\b H
+\f4 \uc0\u8320 
+\f0  \uc0\u8776  75 with ~2 km/s/Mpc total uncertainty
+\f1\b0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 Why tailored EPM is the standout method in the H0DN figure:
+\f1\b0 \
+It's the only entry that's 
+\f0\b truly distance-ladder-free end to end
+\f1\b0 :\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls4\ilvl0\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 No anchor (NGC 4258 maser, LMC DEBs, Gaia parallaxes)\
+\ls4\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 No calibrator galaxies (NGC 1559, M101, Fornax, Virgo)\
+\ls4\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 No standard candle whose absolute magnitude needs external setting\
+\ls4\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Each SN is self-anchored via its own radiative transfer\
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 The cost is conceptual complexity \'97 instead of trusting empirical relations calibrated on Cepheids or TRGB, you're trusting that NLTE radiative transfer in expanding atmospheres is well enough understood for ~5% absolute distances. That's a different kind of trust, with very different failure modes.\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 Failure modes to keep in mind:
+\f1\b0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls5\ilvl0
+\f0\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Asymmetry.
+\f1\b0  SN II ejecta are not perfectly spherical \'97 observed asymmetries (polarization signatures, late-time line profiles) are at the ~5\'9610% level. This biases the inferred angular size.\
+\ls5\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	2	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Time-dependent ionization.
+\f1\b0  TARDIS now handles this; older codes didn't.\
+\ls5\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	3	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Line blanketing in iron-group elements
+\f1\b0  dominates the UV opacity and the assumed elemental abundances feed back into the inferred temperature.\
+\ls5\ilvl0
+\f0\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	4	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Circumstellar interaction.
+\f1\b0  Some SNe II-P show evidence of mass-loss bursts shortly before explosion that distort the early light curve and spectral evolution. Vogl+25 selects against these.\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 Comparison to SCM (the 
+\f5\i other
+\f0\i0  SNe II method):
+\f1\b0 \
+Worth being explicit since both "SNe II" methods appear in the H0DN figure:\
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrt\brdrnil \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth4776\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth3780\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth4069\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+
+\f0\b \cf0 \cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 SCM (Standardized Candle Method)\cell 
+\pard\intbl\itap1\pardeftab720\qc\partightenfactor0
+\cf0 EPM (Expanding Photosphere Method)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth4776\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth3780\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth4069\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+
+\f1\b0 \cf0 Type\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Empirical standard candle\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Geometric distance\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth4776\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth3780\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth4069\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Calibration\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Yes, on Cepheid/TRGB hosts\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 None \'97 self-anchored per SN\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth4776\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth3780\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth4069\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Plateau-luminosity vs $v_\{\\rm phot\}$ correlation\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Core of the method\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Not used\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth4776\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth3780\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth4069\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Spectral modeling\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Not required\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Required (NLTE radiative transfer)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth4776\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth3780\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth4069\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Per-SN scatter\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~10\'9615% in distance\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~5% (tailored)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth4776\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth3780\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth4069\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Position in H0DN figure\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 "Pop-I" route (de Jaeger+22)\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 "adh0cc" route (Vogl+25)\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth4776\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth3780\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth4069\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 H
+\f3 \uc0\u8320 
+\f1  result\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 75.4 \'b1 3.8\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 ~75 \'b1 2\cell \row
+
+\itap1\trowd \taflags0 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrt\brdrnil \trbrdrr\brdrnil 
+\clvertalc \clshdrawnil \clwWidth4776\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx2880
+\clvertalc \clshdrawnil \clwWidth3780\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx5760
+\clvertalc \clshdrawnil \clwWidth4069\clftsWidth3 \clmart10 \clmarl10 \clmarb10 \clmarr10 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadt20 \clpadl20 \clpadb20 \clpadr20 \gaph\cellx8640
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Independence from ladder\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Calibrators tied to Cepheids/TRGB\cell 
+\pard\intbl\itap1\pardeftab720\partightenfactor0
+\cf0 Fully independent\cell \lastrow\row
+}
