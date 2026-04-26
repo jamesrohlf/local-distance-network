@@ -22,9 +22,10 @@ from datetime import datetime
 from tkinter import scrolledtext
 
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import matplotlib.patches as mpatches
 import matplotlib.transforms as mtransforms
-from matplotlib.widgets import Button
+from matplotlib.widgets import Button, Slider
 
 
 # --------------------------------------------------------------------------
@@ -160,6 +161,29 @@ ROUTES = [
          {'nodes': ['snia', 'h0'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
      ]},
+    {'id': 'v03',    'name': 'Baseline + TF', 'color': '#a892d4',
+     'h0': 73.96, 'err': 0.79,
+     'path': ['trgb', 'cf4_trgb_drop', 'cf4_trgb_angle', 'tf',
+              'cf4_tf_h0_angle', 'h0'],
+     'branches': [
+         # CF4-style cepheids → TF branch (also lavender)
+         ['cepheids', 'cf4_ceph_tf_angle', 'tf'],
+         # baseline calibration ladder — white
+         {'nodes': ['sbf', 'popii_h0_angle', 'h0'],
+          'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
+         {'nodes': ['masers', 'cchp_masers_angle', 'trgb', 'sbf'],
+          'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
+         {'nodes': ['trgb', 'cchp_snia_angle', 'snia'],
+          'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
+         {'nodes': ['masers', 'sh0es_masers_bend', 'cepheids', 'snia'],
+          'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
+         {'nodes': ['deb', 'sh0es_deb_bend', 'sh0es_deb_angle', 'cepheids'],
+          'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
+         {'nodes': ['parallax', 'sh0es_par_bend', 'cepheids'],
+          'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
+         {'nodes': ['snia', 'h0'],
+          'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
+     ]},
     {'id': 'sh0es',   'name': 'SH0ES',    'color': '#2a5fd9', 'h0': 73.04, 'err': 1.04,
      'ref': 'Riess et al. 2022b',
      'arxiv': 'https://arxiv.org/abs/2112.04510',
@@ -264,7 +288,7 @@ ROUTES = [
      'path': ['sneii_epm', 'adh0cc_right', 'h0']},
 ]
 
-CONSENSUS = {'value': 73.50, 'err': 0.81}
+CONSENSUS = {'value': 73.99, 'err': 0.70}
 CMB       = {'value': 67.24, 'err': 0.35}
 
 N = len(ROUTES)
@@ -308,7 +332,7 @@ fig.text((0.06 + 0.82) / 2, 0.915,
 
 # Tier background bands (subtle, dark-theme friendly)
 tier_specs = [
-    (0.0,  0.15, 1.0,  3.7, '#4a3240', 'Geometric anchors',     '#ffcc88'),
+    (0.0,  0.15, 1.0,  3.7, '#4a3240', 'Geometric anchors        ', '#ffcc88'),
     (1.3,  0.15, 2.1,  3.7, '#2e3d66', 'Stellar candles',       '#9cc6ff'),
     (3.65, 0.15, 2.05, 3.7, '#3a3e4e', 'Long-range indicators', '#c9c9c9'),
 ]
@@ -654,7 +678,7 @@ _y_lab  = (N + 1.15) * ROW_STEP
 ax_h0.plot([CONSENSUS['value'], CONSENSUS['value']], [-0.3, _y_top],
            color='#6dd4af', linewidth=1.3, linestyle='--', zorder=1)
 ax_h0.text(CONSENSUS['value'], _y_lab,
-           f"Consensus {CONSENSUS['value']:.2f} ± {CONSENSUS['err']:.2f}",
+           f"Everything Available {CONSENSUS['value']:.2f} ± {CONSENSUS['err']:.2f}",
            ha='center', fontsize=9.5, color='#6dd4af', fontweight='medium')
 
 # CMB band + line
@@ -667,12 +691,42 @@ ax_h0.text(CMB['value'], _y_lab,
            f"CMB {CMB['value']:.2f} ± {CMB['err']:.2f}",
            ha='center', fontsize=9.5, color='#ff8787', fontweight='medium')
 
+# Tension readout — shown in the top-right corner of the H0 panel only
+# while a route is isolated.  σ_T = (H0 - CMB) / sqrt(err² + CMB_err²)
+tension_text = ax_h0.text(
+    0.99, 0.97, '', transform=ax_h0.transAxes,
+    ha='right', va='top',
+    fontsize=11, fontweight='bold', color='#ff8787',
+    visible=False)
+
+
+def _update_tension_display(route_id):
+    if route_id is None:
+        tension_text.set_visible(False)
+        return
+    r = next((rr for rr in ROUTES if rr['id'] == route_id), None)
+    if r is None:
+        tension_text.set_visible(False)
+        return
+    sigma = abs(r['h0'] - CMB['value']) / (r['err']**2 + CMB['err']**2) ** 0.5
+    if sigma >= 3.0:
+        col = '#ff8787'
+    elif sigma >= 2.0:
+        col = '#ffcc66'
+    else:
+        col = '#6dd4af'
+    tension_text.set_text(f"{sigma:.1f}σ from CMB")
+    tension_text.set_color(col)
+    tension_text.set_visible(True)
+
 # Error bars — all created invisible, revealed by animation.
 # Also make the errorbar markers, route-name labels, and an invisible
 # row-background rectangle pickable so the whole row in the H0 panel
 # acts as a clickable isolation target.
 h0_bars = {}
 h0_pick = {}      # artist → route_id
+h0_value_text_by_id = {}    # route_id → H0 value Text (right column)
+h0_name_text_by_id  = {}    # route_id → route-name Text (left column)
 for i, r in enumerate(ROUTES):
     y = (N - i - 0.5) * ROW_STEP
     eb = ax_h0.errorbar(
@@ -692,9 +746,11 @@ for i, r in enumerate(ROUTES):
                     fontsize=10, fontweight='medium', color=TEXT,
                     picker=True)
     h0_pick[nm] = r['id']
+    h0_name_text_by_id[r['id']] = nm
     # value text
-    ax_h0.text(81.2, y, f"{r['h0']:.2f} ± {r['err']:.2f}",
-               ha='left', va='center', fontsize=9, color=TEXT_DIM)
+    h0_value_text_by_id[r['id']] = ax_h0.text(
+        81.2, y, f"{r['h0']:.2f} ± {r['err']:.2f}",
+        ha='left', va='center', fontsize=9, color=TEXT_DIM)
     # transparent clickable rectangle spanning the row for easier hitting
     rect = mpatches.Rectangle((63, y - 0.5 * ROW_STEP), 19.5, ROW_STEP,
                               facecolor='none', edgecolor='none',
@@ -733,17 +789,21 @@ legend_to_id = {ll: r['id'] for ll, r in zip(legend.get_lines(), ROUTES)}
 # Map route_id → arxiv URL (if any), used for the side-arrow clicks
 # and for embedding in saved PDF/SVG via Text.set_url().
 route_arxiv = {r['id']: r.get('arxiv') for r in ROUTES if r.get('arxiv')}
+# Per-route maps so we can highlight on isolation.
+legend_text_by_id = {}
+legend_line_by_id = {r['id']: ll for ll, r in zip(legend.get_lines(), ROUTES)}
 # Make legend texts pickable too, so clicking the label row (not just
 # the colour swatch) also isolates.
 for lt, r in zip(legend.get_texts(), ROUTES):
     lt.set_picker(True)
     legend_to_id[lt] = r['id']
+    legend_text_by_id[r['id']] = lt
     if r.get('arxiv'):
         lt.set_url(r['arxiv'])     # clickable in saved PDF/SVG
 
 # Route-acronym legend on the right, below the Routes legend
 ROUTE_ACRONYMS = [
-    ('SH0ES',  r'Supernovae, $H_0$, for the Equation of State of dark energy'),
+    ('SH0ES',  r'Supernovae $H_0$ for the Equation of State of dark energy'),
     ('CCHP',   'Carnegie–Chicago Hubble Program'),
     ('EDD',    'Extragalactic Distance Database'),
     ('Pop',    'Population stellar tracers'),
@@ -856,6 +916,14 @@ def _route_acros_used(route_id):
     return used
 
 
+# Reverse index: acronym key → set of route_ids that pass through any
+# node mapped to that acronym.  Used by the acronym-hover feature.
+ACRO_TO_ROUTES = {}
+for _r in ROUTES:
+    for _k in _route_acros_used(_r['id']):
+        ACRO_TO_ROUTES.setdefault(_k, set()).add(_r['id'])
+
+
 def _highlight_acronyms(route_id):
     used = _route_acros_used(route_id)
     rused = set(ROUTE_TO_RACRO.get(route_id, []))
@@ -884,6 +952,50 @@ def _reset_acronym_highlight():
         t.set_fontweight('normal')
 
 
+def _highlight_route(route_id):
+    """Bold/brighten the matching route's legend entry, H0 panel name,
+    and H0 value label; dim the others."""
+    for rid, lt in legend_text_by_id.items():
+        if rid == route_id:
+            lt.set_color(TEXT)
+            lt.set_fontweight('bold')
+        else:
+            lt.set_color(TEXT_DIM)
+            lt.set_fontweight('normal')
+    for rid, ll in legend_line_by_id.items():
+        ll.set_linewidth(5.5 if rid == route_id else 2.4)
+        ll.set_alpha(1.0 if rid == route_id else 0.45)
+    for rid, t in h0_value_text_by_id.items():
+        if rid == route_id:
+            t.set_color(TEXT)
+            t.set_fontweight('bold')
+        else:
+            t.set_color(TEXT_DIM)
+            t.set_fontweight('normal')
+    for rid, t in h0_name_text_by_id.items():
+        if rid == route_id:
+            t.set_color(TEXT)
+            t.set_fontweight('bold')
+        else:
+            t.set_color(TEXT_DIM)
+            t.set_fontweight('normal')
+
+
+def _reset_route_highlight():
+    for lt in legend_text_by_id.values():
+        lt.set_color(TEXT)
+        lt.set_fontweight('normal')
+    for ll in legend_line_by_id.values():
+        ll.set_linewidth(3.6)
+        ll.set_alpha(1.0)
+    for t in h0_value_text_by_id.values():
+        t.set_color(TEXT_DIM)
+        t.set_fontweight('normal')
+    for t in h0_name_text_by_id.values():
+        t.set_color(TEXT)
+        t.set_fontweight('medium')
+
+
 def info(msg):
     status.set_text(msg)
 
@@ -901,11 +1013,28 @@ def mkbtn(x, y, w, h, label):
     b.label.set_color(TEXT); b.label.set_fontsize(9)
     return b
 
-# Buttons: just Save PNG
-btn_save    = mkbtn(0.06, 0.952, 0.10, 0.028, 'Save PNG')
+# Buttons: Save PNG, Save PDF (vector with clickable arXiv links), Reset, Tour
+btn_save     = mkbtn(0.06, 0.952, 0.10, 0.028, 'Save PNG')
+btn_save_pdf = mkbtn(0.17, 0.952, 0.10, 0.028, 'Save PDF')
+btn_clear    = mkbtn(0.28, 0.952, 0.09, 0.028, 'Reset')
+btn_tour     = mkbtn(0.38, 0.952, 0.09, 0.028, 'Tour')
+btn_fig1     = mkbtn(0.67, 0.905, 0.12, 0.025, 'H0DN Fig. 1')
+btn_tab4     = mkbtn(0.80, 0.905, 0.12, 0.025, 'H0DN Tab. 4')
 
-# Status line
-status_ax = mkax(0.17, 0.952, 0.79, 0.028, '#10121f')
+# Tour speed slider — interval (ms) between routes.  Higher = slower.
+fig.text(0.485, 0.967, 'Tour ms', color=TEXT_DIM, fontsize=8,
+         ha='left', va='center')
+speed_ax = fig.add_axes([0.525, 0.961, 0.08, 0.014], facecolor='#10121f')
+speed_slider = Slider(speed_ax, '', 40, 1200, valinit=180, valstep=20,
+                      color='#5588cc', track_color=GRID,
+                      initcolor='none')
+speed_slider.valtext.set_color(TEXT_DIM)
+speed_slider.valtext.set_fontsize(8)
+speed_slider.poly.set_edgecolor('none')
+
+# Status line — sits in the narrow gap between the H0DN buttons /
+# title row above and the Routes legend below.
+status_ax = mkax(0.40, 0.882, 0.55, 0.020, '#10121f')
 status_ax.set_xticks([]); status_ax.set_yticks([])
 status = status_ax.text(0.02, 0.5, '', color=TEXT_DIM, fontsize=9,
                         va='center', transform=status_ax.transAxes)
@@ -927,6 +1056,137 @@ def on_save(_):
 btn_save.on_clicked(on_save)
 
 
+def on_save_pdf(_):
+    out = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        f'local_distance_network_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf')
+    fig.savefig(out, facecolor=BG, bbox_inches='tight')
+    info(f'saved → {os.path.basename(out)}')
+    print(f'saved → {out}')
+
+
+btn_save_pdf.on_clicked(on_save_pdf)
+
+
+def on_fig1(_):
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        'figure1.png')
+    if not os.path.isfile(path):
+        info('figure1.png not found')
+        return
+    if _open_externally(path):
+        info(f'opened {os.path.basename(path)}')
+    else:
+        info(f'could not open {os.path.basename(path)}')
+
+
+btn_fig1.on_clicked(on_fig1)
+
+
+def on_tab4(_):
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        'aa57993-25.pdf')
+    if not os.path.isfile(path):
+        info('aa57993-25.pdf not found')
+        return
+    if _open_externally(path):
+        info(f'opened {os.path.basename(path)}')
+    else:
+        info(f'could not open {os.path.basename(path)}')
+
+
+btn_tab4.on_clicked(on_tab4)
+
+
+def on_clear(_):
+    if active['id'] is not None:
+        active['id'] = None
+        _reset_isolation()
+        info('cleared isolation')
+        fig.canvas.draw_idle()
+    else:
+        info('nothing to clear')
+
+
+btn_clear.on_clicked(on_clear)
+
+
+# --- Tour: auto-cycle through every route, end on the full map. -----
+_tour_state = {'timer': None, 'queue': []}
+
+
+def _cancel_tour():
+    """Stop a running tour and reset to the full map. Returns True if a
+    tour was active."""
+    t = _tour_state.get('timer')
+    if t is None:
+        return False
+    try:
+        t.stop()
+    except Exception:
+        pass
+    _tour_state['timer'] = None
+    _tour_state['queue'] = []
+    if active['id'] is not None:
+        active['id'] = None
+        _reset_isolation()
+    fig.canvas.draw_idle()
+    return True
+
+
+def _start_tour(interval_ms=None):
+    _cancel_tour()
+    if interval_ms is None:
+        interval_ms = int(speed_slider.val)
+    # Anchor the comparison on the currently-isolated route (if any),
+    # otherwise on Baseline.  The tour then steps through every other
+    # route paired against the anchor.
+    anchor_id = active['id'] or 'baseline'
+    anchor = next((r for r in ROUTES if r['id'] == anchor_id), None)
+    if anchor is None:
+        anchor_id = 'baseline'
+        anchor = next(r for r in ROUTES if r['id'] == 'baseline')
+    _tour_state['queue'] = [
+        (anchor_id, r['id'], f"{anchor['name']} vs {r['name']}")
+        for r in ROUTES if r['id'] != anchor_id
+    ]
+    active['id'] = None
+    timer = fig.canvas.new_timer(interval=interval_ms)
+
+    def _step():
+        if not _tour_state['queue']:
+            timer.stop()
+            _tour_state['timer'] = None
+            active['id'] = None
+            _reset_isolation()
+            info(DEFAULT_STATUS)
+            fig.canvas.draw_idle()
+            return
+        rid_a, rid_b, label = _tour_state['queue'].pop(0)
+        _highlight_routes((rid_a, rid_b))
+        ra = next((r for r in ROUTES if r['id'] == rid_a), None)
+        rb = next((r for r in ROUTES if r['id'] == rid_b), None)
+        if ra and rb:
+            sigma = abs(ra['h0'] - rb['h0']) / (
+                ra['err'] ** 2 + rb['err'] ** 2) ** 0.5
+            info(f"{label}:  {ra['h0']:.2f} vs {rb['h0']:.2f}  "
+                 f"({sigma:.1f}σ)")
+        else:
+            info(label)
+        fig.canvas.draw_idle()
+
+    timer.add_callback(_step)
+    timer.start()
+    _tour_state['timer'] = timer
+
+
+def on_tour(_):
+    _start_tour()
+
+
+btn_tour.on_clicked(on_tour)
+
+
 # Legend click → isolate one route (all its branches stay grouped)
 def _reset_isolation():
     for rid, lines in route_lines.items():
@@ -945,6 +1205,8 @@ def _reset_isolation():
     for ln in divided_highway_lines:
         ln.set_visible(True)
     _reset_acronym_highlight()
+    _reset_route_highlight()
+    _update_tension_display(None)
 
 
 def _isolate(route_id):
@@ -960,17 +1222,78 @@ def _isolate(route_id):
                 ln.set_alpha(1.0 if hi else 0.0)
                 ln.set_linewidth(3.6 if hi else line_lw.get(ln, 2.8))
             else:
-                ln.set_alpha(1.0 if hi else 0.09)
+                # Non-active route lines hide entirely so overlapping
+                # shared-path segments don't stack into a visible ghost.
+                ln.set_alpha(1.0 if hi else 0.0)
                 ln.set_linewidth(3.6 if hi else 2.2)
     # The divided-highway decoration only makes sense in the unisolated map
     for ln in divided_highway_lines:
         ln.set_visible(False)
     _highlight_acronyms(route_id)
+    _highlight_route(route_id)
+    _update_tension_display(route_id)
     for rid, eb in h0_bars.items():
         _set_errorbar_alpha(eb, 1.0 if rid == route_id else 0.18)
     for rid, labels in route_labels.items():
         for t in labels:
             t.set_visible(rid == route_id)
+
+
+# The Tour button compares the currently-isolated route (or Baseline,
+# if nothing is isolated) against every other route in turn. The pair
+# list is built dynamically inside _start_tour so the anchor follows
+# the user's selection.
+
+
+def _highlight_routes(route_ids):
+    """Multi-route version of _isolate: every route in the set stays
+    fully visible, all others are hidden."""
+    matching = set(route_ids)
+    for rid, lines in route_lines.items():
+        keep = (rid in matching)
+        for ln in lines:
+            if ln in background_lines:
+                ln.set_alpha(line_alpha.get(ln, FULL_ALPHA) if keep else 0.0)
+                ln.set_linewidth(line_lw.get(ln, 2.8))
+            elif ln in hidden_lines:
+                ln.set_alpha(1.0 if keep else 0.0)
+                ln.set_linewidth(3.6 if keep else line_lw.get(ln, 2.8))
+            else:
+                ln.set_alpha(1.0 if keep else 0.0)
+                ln.set_linewidth(3.0 if keep else 2.2)
+    for ln in divided_highway_lines:
+        ln.set_visible(False)
+    for rid, eb in h0_bars.items():
+        _set_errorbar_alpha(eb, 1.0 if rid in matching else 0.18)
+    for rid, labels in route_labels.items():
+        for t in labels:
+            t.set_visible(False)
+    _reset_acronym_highlight()
+    for rid, lt in legend_text_by_id.items():
+        if rid in matching:
+            lt.set_color(TEXT)
+            lt.set_fontweight('bold')
+        else:
+            lt.set_color(TEXT_DIM)
+            lt.set_fontweight('normal')
+    for rid, ll in legend_line_by_id.items():
+        ll.set_alpha(1.0 if rid in matching else 0.45)
+        ll.set_linewidth(4.5 if rid in matching else 2.4)
+    for rid, t in h0_value_text_by_id.items():
+        if rid in matching:
+            t.set_color(TEXT)
+            t.set_fontweight('bold')
+        else:
+            t.set_color(TEXT_DIM)
+            t.set_fontweight('normal')
+    for rid, t in h0_name_text_by_id.items():
+        if rid in matching:
+            t.set_color(TEXT)
+            t.set_fontweight('bold')
+        else:
+            t.set_color(TEXT_DIM)
+            t.set_fontweight('normal')
+    tension_text.set_visible(False)
 
 
 def _toggle_isolation(route_id):
@@ -1058,7 +1381,286 @@ def _show_text_popup(label, path):
     info(f'opened {os.path.basename(path)}')
 
 
+_cartoon_state = {'artists': [], 'axes': [], 'btns': [], 'card_rect': None}
+
+
+def _close_cartoon_popup():
+    """Remove overlay artists from the main figure."""
+    for a in _cartoon_state['artists']:
+        try:
+            a.remove()
+        except Exception:
+            pass
+    for ax_obj in _cartoon_state['axes']:
+        try:
+            fig.delaxes(ax_obj)
+        except Exception:
+            pass
+    _cartoon_state['artists'] = []
+    _cartoon_state['axes'] = []
+    _cartoon_state['btns'] = []
+    _cartoon_state['eleonora_artists'] = []
+    _cartoon_state['reaction_artists'] = []
+    _cartoon_state['card_rect'] = None
+    fig.canvas.draw_idle()
+
+
+def _show_adam_reaction(emoji):
+    """Replace the ar.png icon with the reaction emoji at the same spot."""
+    for a in _cartoon_state.get('reaction_artists', []):
+        try:
+            a.remove()
+        except Exception:
+            pass
+    _cartoon_state['reaction_artists'] = []
+
+    # Hide the ar.png axes so the emoji takes its place.
+    img_ax = _cartoon_state.get('img_ax')
+    if img_ax is not None:
+        img_ax.set_visible(False)
+
+    pos = _cartoon_state.get('icon_pos', (0.45, 0.605))
+    rxn = fig.text(pos[0], pos[1], emoji, ha='center', va='center',
+                   fontsize=44, zorder=215)
+    _cartoon_state['reaction_artists'] = [rxn]
+    _cartoon_state['artists'].append(rxn)
+    fig.canvas.draw_idle()
+
+
+def _show_eleonora_reply(button_cx, button_top_y):
+    """Overlay Eleonora's speech bubble (a regular rounded-rect speech
+    balloon with a triangular tail) on top of the thought cloud, with
+    the tail pointing down toward the d) button.
+    """
+    # Remove any prior Eleonora artists so repeated clicks don't stack.
+    for a in _cartoon_state.get('eleonora_artists', []):
+        try:
+            a.remove()
+        except Exception:
+            pass
+    _cartoon_state['eleonora_artists'] = []
+
+    sb_x, sb_y, sb_w, sb_h = 0.31, 0.41, 0.38, 0.10
+    sb_top = sb_y + sb_h
+    bub_color = '#ffe79a'
+    edge_color = '#aa5500'
+
+    # Tail under the bubble, pointing down toward the d) button
+    tail_base_lx = button_cx - 0.018
+    tail_base_rx = button_cx + 0.018
+    tail = mpatches.Polygon(
+        [[tail_base_lx, sb_y],
+         [tail_base_rx, sb_y],
+         [button_cx,    button_top_y + 0.005]],
+        transform=fig.transFigure, closed=True,
+        facecolor=bub_color, edgecolor=edge_color, linewidth=1.6,
+        zorder=219.5, figure=fig)
+    fig.add_artist(tail)
+
+    bubble = mpatches.FancyBboxPatch(
+        (sb_x, sb_y), sb_w, sb_h,
+        boxstyle='round,pad=0.006,rounding_size=0.025',
+        transform=fig.transFigure,
+        facecolor=bub_color, edgecolor=edge_color, linewidth=1.6,
+        zorder=220, figure=fig)
+    fig.add_artist(bubble)
+
+    # Hide the segment of the bubble's bottom edge between tail corners
+    seam = mpatches.Rectangle(
+        (tail_base_lx + 0.001, sb_y - 0.002),
+        (tail_base_rx - tail_base_lx) - 0.002, 0.004,
+        transform=fig.transFigure,
+        facecolor=bub_color, edgecolor='none',
+        zorder=220.5, figure=fig)
+    fig.add_artist(seam)
+
+    txt = fig.text(0.5, sb_y + sb_h / 2,
+                   'Just use the Planck value',
+                   ha='center', va='center',
+                   fontsize=13, fontweight='bold', color='#222222',
+                   zorder=221)
+
+    new_artists = [tail, bubble, seam, txt]
+    _cartoon_state['eleonora_artists'] = new_artists
+    _cartoon_state['artists'].extend(new_artists)
+    info("Eleonora says: 'Just use the Planck value'")
+    fig.canvas.draw_idle()
+
+
+def _open_cartoon_popup():
+    """Cartoon speech-bubble overlay drawn directly on the main figure
+    so it works under any matplotlib backend without spawning a new
+    window or event loop."""
+    info("Adam wants to go to H.  Which path should he take?")
+
+    if _cartoon_state['artists'] or _cartoon_state['axes']:
+        _close_cartoon_popup()
+
+    artists = []
+    axes_list = []
+    btns_list = []
+
+    # Dim the background so the bubble pops
+    dim = mpatches.Rectangle(
+        (0, 0), 1, 1, transform=fig.transFigure,
+        facecolor='#000000', alpha=0.45, zorder=200, figure=fig)
+    fig.add_artist(dim)
+    artists.append(dim)
+
+    # Cartoon yellow card (extended downward to fit choice buttons)
+    card_x, card_y, card_w, card_h = 0.27, 0.26, 0.46, 0.40
+    _cartoon_state['card_rect'] = (card_x, card_y, card_w, card_h)
+    card = mpatches.FancyBboxPatch(
+        (card_x, card_y), card_w, card_h,
+        boxstyle='round,pad=0.012,rounding_size=0.02',
+        transform=fig.transFigure,
+        facecolor='#fff8dc', edgecolor='#aa5500', linewidth=2.0,
+        zorder=201, figure=fig)
+    fig.add_artist(card)
+    artists.append(card)
+
+    # Title row — photo (or reaction emoji) supplies the "person" glyph.
+    t1 = fig.text(0.51, card_y + card_h - 0.055, '→  H',
+                  ha='left', va='center',
+                  fontsize=22, fontweight='bold', color='#aa5500',
+                  zorder=202)
+    artists.append(t1)
+
+    # ar.png as a small icon overlaid just left of the arrow
+    bub_x = card_x + 0.03
+    bub_w = card_w - 0.06
+    bub_y = card_y + card_h - 0.260      # below the icon row, with room
+    bub_h = 0.10                         # for the trail circles above
+    img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            'ar.png')
+    try:
+        img = mpimg.imread(img_path)
+    except Exception as e:
+        print(f"[H0] could not load ar.png: {e}")
+        img = None
+    icon_cx = 0.45
+    icon_cy = card_y + card_h - 0.055
+    _cartoon_state['icon_pos'] = (icon_cx, icon_cy)
+    _cartoon_state['img_ax'] = None
+    if img is not None:
+        icon_w = (card_w - 0.06) / 4        # equivalent to old bub_w/2
+        icon_h = 0.13 / 2
+        img_ax = fig.add_axes(
+            [icon_cx - icon_w / 2, icon_cy - icon_h / 2, icon_w, icon_h],
+            zorder=210)
+        img_ax.imshow(img)
+        img_ax.axis('off')
+        img_ax.set_facecolor('none')
+        axes_list.append(img_ax)
+        _cartoon_state['img_ax'] = img_ax
+
+    # Classic cartoon thought cloud: scalloped outline (roundtooth) +
+    # trail of shrinking circles leading up toward the speaker.
+    bub_l = card_x + 0.04
+    bub_w_inner = card_w - 0.08
+    bub_b = bub_y
+    bub_h_inner = bub_h
+    bub_top = bub_b + bub_h_inner
+
+    bubble = mpatches.FancyBboxPatch(
+        (bub_l, bub_b), bub_w_inner, bub_h_inner,
+        boxstyle='roundtooth,pad=0.012,tooth_size=0.014',
+        transform=fig.transFigure,
+        facecolor='#ffffff', edgecolor='#aa5500', linewidth=1.5,
+        zorder=202, figure=fig)
+    fig.add_artist(bubble)
+    artists.append(bubble)
+
+    # Aspect-correcting factor so circles look round, not oval, in
+    # figure coordinates (figsize is 13x10 → x:y = 1.3).
+    _fw, _fh = fig.get_size_inches()
+    _ar = _fw / _fh
+    for (cx, cy, r) in [
+        (0.480, bub_top + 0.020, 0.0085),
+        (0.467, bub_top + 0.040, 0.0060),
+        (0.458, bub_top + 0.055, 0.0040),
+    ]:
+        dot = mpatches.Ellipse(
+            (cx, cy), width=2 * r, height=2 * r * _ar,
+            transform=fig.transFigure,
+            facecolor='#ffffff', edgecolor='#aa5500', linewidth=1.2,
+            zorder=202, figure=fig)
+        fig.add_artist(dot)
+        artists.append(dot)
+
+    t2 = fig.text(0.5, bub_b + bub_h_inner / 2,
+                  'Adam wants to go to H.\nWhich path should he take?',
+                  ha='center', va='center',
+                  fontsize=12, color='#222222', zorder=203)
+    artists.append(t2)
+
+    # Quiz answer buttons — first three isolate a route, the fourth
+    # overlays Eleonora's reply bubble.  Third element of the action
+    # tuple is the reaction emoji shown above Adam.
+    choices = [
+        ('a)  Ask Dillon',   ('isolate', 'sh0es',    '😀')),
+        ('b)  Ask Jim',      ('isolate', 'desi',     '😀')),
+        ('c)  Ask Wendy',    ('isolate', 'cchp_edd', '😞')),
+        ('d)  Ask Eleonora', ('eleonora', None,      '😠')),
+    ]
+    cb_h = 0.038
+    cb_w = 0.10
+    cb_gap = 0.008
+    cb_total = len(choices) * cb_w + (len(choices) - 1) * cb_gap
+    cb_start_x = 0.5 - cb_total / 2
+    cb_y = card_y + 0.085
+
+    def _make_choice_cb(action, rid, emoji):
+        def _cb(_e):
+            if action == 'eleonora':
+                _show_eleonora_reply(cb_start_x + 3 * (cb_w + cb_gap)
+                                     + cb_w / 2, cb_y + cb_h)
+                _show_adam_reaction(emoji)
+            else:
+                _show_adam_reaction(emoji)
+                timer = fig.canvas.new_timer(interval=900)
+                def _finish():
+                    timer.stop()
+                    _close_cartoon_popup()
+                    _toggle_isolation(rid)
+                timer.add_callback(_finish)
+                timer.start()
+        return _cb
+
+    for i, (label, (action, rid, emoji)) in enumerate(choices):
+        bx = cb_start_x + i * (cb_w + cb_gap)
+        bax = fig.add_axes([bx, cb_y, cb_w, cb_h], zorder=204)
+        bb = Button(bax, label, color='#ffe79a', hovercolor='#ffc233')
+        bb.label.set_color('#222222')
+        bb.label.set_fontsize(9)
+        bb.label.set_fontweight('bold')
+        bb.on_clicked(_make_choice_cb(action, rid, emoji))
+        axes_list.append(bax)
+        btns_list.append(bb)
+
+    # Close (X) button at top-right of the card
+    close_ax = fig.add_axes(
+        [card_x + card_w - 0.04, card_y + card_h - 0.04, 0.03, 0.03],
+        zorder=204)
+    close_btn = Button(close_ax, '✕', color='#fff8dc', hovercolor='#ffc233')
+    close_btn.label.set_color('#aa5500')
+    close_btn.label.set_fontsize(11)
+    close_btn.label.set_fontweight('bold')
+    close_btn.on_clicked(lambda _e: _close_cartoon_popup())
+    axes_list.append(close_ax)
+    btns_list.append(close_btn)
+
+    _cartoon_state['artists'] = artists
+    _cartoon_state['axes'] = axes_list
+    _cartoon_state['btns'] = btns_list
+
+    fig.canvas.draw_idle()
+
+
 def _open_node_popup(node_id):
+    if node_id == 'h0':
+        _open_cartoon_popup()
+        return
     path = _node_info_path(node_id)
     label = NODES[node_id][2].replace('\n', ' ').strip() or node_id
     if not path:
@@ -1122,8 +1724,25 @@ def on_button_press(event):
     opens the linked paper. Clicking a node circle opens a per-node
     info popup. Otherwise the click toggles route isolation.
     """
+    # If the click lands on a cartoon-popup overlay axes (choice button,
+    # close button, image), let that widget handle it and skip the
+    # figure-wide hit tests — otherwise the click would also toggle a
+    # route under the popup.
+    if event.inaxes is not None and event.inaxes in _cartoon_state.get('axes', []):
+        return
+    # Any user click cancels an in-progress tour.
+    _cancel_tour()
     if event.button != 1:
         return
+    # Click outside the popup card while it's open → dismiss.
+    rect = _cartoon_state.get('card_rect')
+    if rect is not None and event.x is not None:
+        cx_, cy_, cw_, ch_ = rect
+        fx = event.x / fig.bbox.width
+        fy = event.y / fig.bbox.height
+        if not (cx_ <= fx <= cx_ + cw_ and cy_ <= fy <= cy_ + ch_):
+            _close_cartoon_popup()
+            return
     # First check arxiv arrow overlays
     for arrow, url in arxiv_links.items():
         try:
@@ -1172,21 +1791,191 @@ def on_button_press(event):
 fig.canvas.mpl_connect('button_press_event', on_button_press)
 
 
+def on_key_press(event):
+    if event.key == 'escape' and (_cartoon_state.get('artists')
+                                  or _cartoon_state.get('axes')):
+        _close_cartoon_popup()
+        return
+    # Up/Down arrows step through routes when one is isolated.
+    if event.key in ('up', 'down') and active['id'] is not None:
+        ids = [r['id'] for r in ROUTES]
+        try:
+            idx = ids.index(active['id'])
+        except ValueError:
+            return
+        delta = -1 if event.key == 'up' else 1
+        new_id = ids[(idx + delta) % len(ids)]
+        active['id'] = new_id
+        _isolate(new_id)
+        info(f"isolated route: {new_id}")
+        fig.canvas.draw_idle()
+
+
+fig.canvas.mpl_connect('key_press_event', on_key_press)
+
+
+# --------------------------------------------------------------------------
+# Hover tooltips — show route info in the status line on motion over a
+# route line, legend entry, or H0-panel marker.
+# --------------------------------------------------------------------------
+
+DEFAULT_STATUS = ('click a route to isolate · click a node for info · '
+                  'click ↗ for the arXiv paper')
+_hover_state = {'rid': None}
+
+
+def _route_meta_msg(rid):
+    r = next((rr for rr in ROUTES if rr['id'] == rid), None)
+    if r is None:
+        return DEFAULT_STATUS
+    msg = f"{r['name']}:  H₀ = {r['h0']:.2f} ± {r['err']:.2f}"
+    ref = r.get('ref', '')
+    if ref:
+        msg += f"   {ref}"
+    return msg
+
+
+_acronym_hover = {'key': None}
+
+
+def _highlight_routes_using_acronym(key):
+    """Multi-route highlight: keep all routes that pass through any
+    node mapped to ``key`` visible; hide the rest."""
+    matching = ACRO_TO_ROUTES.get(key, set())
+    for rid, lines in route_lines.items():
+        keep = (rid in matching)
+        for ln in lines:
+            if ln in background_lines:
+                ln.set_alpha(line_alpha.get(ln, FULL_ALPHA) if keep else 0.0)
+                ln.set_linewidth(line_lw.get(ln, 2.8))
+            elif ln in hidden_lines:
+                ln.set_alpha(1.0 if keep else 0.0)
+                ln.set_linewidth(3.6 if keep else line_lw.get(ln, 2.8))
+            else:
+                ln.set_alpha(1.0 if keep else 0.0)
+                ln.set_linewidth(3.0 if keep else 2.2)
+    for ln in divided_highway_lines:
+        ln.set_visible(False)
+    for rid, eb in h0_bars.items():
+        _set_errorbar_alpha(eb, 1.0 if rid in matching else 0.18)
+    for rid, labels in route_labels.items():
+        for t in labels:
+            t.set_visible(False)
+    # Highlight the hovered acronym, dim others.
+    for k, t in acronym_texts.items():
+        if k == key:
+            t.set_color(TEXT)
+            t.set_fontweight('bold')
+        else:
+            t.set_color(TEXT_DIM)
+            t.set_fontweight('normal')
+    for t in route_acronym_texts.values():
+        t.set_color(TEXT_DIM)
+        t.set_fontweight('normal')
+    # Bold matching legend entries.
+    for rid, lt in legend_text_by_id.items():
+        if rid in matching:
+            lt.set_color(TEXT)
+            lt.set_fontweight('bold')
+        else:
+            lt.set_color(TEXT_DIM)
+            lt.set_fontweight('normal')
+    for rid, ll in legend_line_by_id.items():
+        ll.set_alpha(1.0 if rid in matching else 0.45)
+        ll.set_linewidth(4.5 if rid in matching else 2.4)
+    # Highlight matching H0-panel rows
+    for rid, t in h0_value_text_by_id.items():
+        if rid in matching:
+            t.set_color(TEXT)
+            t.set_fontweight('bold')
+        else:
+            t.set_color(TEXT_DIM)
+            t.set_fontweight('normal')
+    for rid, t in h0_name_text_by_id.items():
+        if rid in matching:
+            t.set_color(TEXT)
+            t.set_fontweight('bold')
+        else:
+            t.set_color(TEXT_DIM)
+            t.set_fontweight('normal')
+    tension_text.set_visible(False)
+
+
+def _restore_after_acronym_hover():
+    """Return to whatever isolation state was active before the hover."""
+    if active['id'] is not None:
+        _isolate(active['id'])
+    else:
+        _reset_isolation()
+
+
+def on_motion(event):
+    # Don't fight the popup's status messages.
+    if _cartoon_state.get('artists') or _cartoon_state.get('axes'):
+        return
+
+    # Acronym hover: bottom-left list. Hovering an entry highlights
+    # every route that passes through any node mapped to that acronym.
+    hovered_key = None
+    for k, t in acronym_texts.items():
+        try:
+            hit, _ = t.contains(event)
+        except Exception:
+            hit = False
+        if hit:
+            hovered_key = k
+            break
+    if hovered_key != _acronym_hover['key']:
+        _acronym_hover['key'] = hovered_key
+        if hovered_key:
+            _highlight_routes_using_acronym(hovered_key)
+            n = len(ACRO_TO_ROUTES.get(hovered_key, set()))
+            info(f"{hovered_key}: used by {n} route" + ('' if n == 1 else 's'))
+        else:
+            _restore_after_acronym_hover()
+        _hover_state['rid'] = None
+        fig.canvas.draw_idle()
+    if hovered_key:
+        return
+
+    # Per-route hover → status line tooltip.
+    rid = None
+    for art_dict in (line_to_id, legend_to_id, h0_pick):
+        for art, _rid in art_dict.items():
+            try:
+                hit, _ = art.contains(event)
+            except Exception:
+                hit = False
+            if hit:
+                rid = _rid
+                break
+        if rid:
+            break
+    if rid != _hover_state['rid']:
+        _hover_state['rid'] = rid
+        info(_route_meta_msg(rid) if rid else DEFAULT_STATUS)
+        fig.canvas.draw_idle()
+
+
+fig.canvas.mpl_connect('motion_notify_event', on_motion)
+
+
 # --------------------------------------------------------------------------
 # Static startup
 # --------------------------------------------------------------------------
 
-info('click a route to isolate · click a node for info · click ↗ for the arXiv paper')
+info(DEFAULT_STATUS)
 
 # Credit at the top-right of the figure
 fig.text(0.994, 0.985, 'Credit: James Rohlf and Claude Opus 4.7',
          ha='right', va='top',
-         fontsize=8.5, color='#7a8090', fontstyle='italic', zorder=100)
+         fontsize=8.5, color=TEXT_DIM, fontstyle='italic', zorder=100)
 fig.text(0.994, 0.970, 'Boston University Physics',
          ha='right', va='top',
-         fontsize=8.5, color='#7a8090', fontstyle='italic', zorder=100)
+         fontsize=8.5, color=TEXT_DIM, fontstyle='italic', zorder=100)
 
 # keep widget refs alive
-fig._keep = (btn_save,)
+fig._keep = (btn_save, btn_save_pdf, btn_clear, btn_tour,
+             btn_fig1, btn_tab4)
 
 plt.show()
