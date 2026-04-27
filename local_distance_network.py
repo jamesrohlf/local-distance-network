@@ -13,18 +13,21 @@ Controls (top of figure):
     Save PNG — timestamped snapshot
 """
 
+import csv
 import os
 import subprocess
 import sys
 import tkinter as tk
 import webbrowser
 from datetime import datetime
+from itertools import combinations
 from tkinter import scrolledtext
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib.patches as mpatches
 import matplotlib.transforms as mtransforms
+import numpy as np
 from matplotlib.widgets import Button, Slider
 
 
@@ -161,7 +164,7 @@ ROUTES = [
          {'nodes': ['snia', 'h0'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
      ]},
-    {'id': 'v03',    'name': 'Baseline + TF', 'color': '#a892d4',
+    {'id': 'v06',    'name': 'Baseline + TF', 'color': '#a892d4',
      'h0': 73.96, 'err': 0.79,
      'path': ['trgb', 'cf4_trgb_drop', 'cf4_trgb_angle', 'tf',
               'cf4_tf_h0_angle', 'h0'],
@@ -185,7 +188,7 @@ ROUTES = [
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
      ]},
     {'id': 'sh0es',   'name': 'SH0ES',    'color': '#2a5fd9', 'h0': 73.04, 'err': 1.04,
-     'ref': 'Riess et al. 2022b',
+     'ref': 'Riess et al. 2022',
      'arxiv': 'https://arxiv.org/abs/2112.04510',
      'path': ['deb', 'sh0es_deb_bend', 'sh0es_deb_angle', 'cepheids', 'snia', 'h0'],
      'branches': [
@@ -292,6 +295,94 @@ CONSENSUS = {'value': 73.99, 'err': 0.70}
 CMB       = {'value': 67.24, 'err': 0.35}
 
 N = len(ROUTES)
+ROUTE_INDEX = {r['id']: i for i, r in enumerate(ROUTES)}
+
+
+def _load_correlation_matrix():
+    """Load the route×route correlation matrix from
+    route_correlations.csv next to the script.  Falls back to the
+    identity matrix (uncorrelated) if the file is missing or malformed
+    so existing behavior is unaffected."""
+    n = len(ROUTES)
+    rho = np.identity(n)
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        'route_correlations.csv')
+    if not os.path.isfile(path):
+        return rho
+    try:
+        with open(path) as f:
+            reader = csv.reader(f)
+            header = next(reader)[1:]
+            loaded = {}
+            for row in reader:
+                if not row:
+                    continue
+                rid = row[0].strip()
+                vals = [float(v) for v in row[1:]]
+                loaded[rid] = dict(zip(header, vals))
+        for i, rid_i in enumerate(ROUTES):
+            for j, rid_j in enumerate(ROUTES):
+                v = loaded.get(rid_i['id'], {}).get(rid_j['id'])
+                if v is not None:
+                    rho[i, j] = v
+        # Symmetrize defensively in case the file isn't perfectly so.
+        rho = 0.5 * (rho + rho.T)
+        return rho
+    except Exception as e:
+        print(f"[corr] could not load {path}: {e!r}; using identity")
+        return np.identity(n)
+
+
+ROUTE_RHO = _load_correlation_matrix()
+
+
+def _effective_n(route_ids, sigma_combined):
+    """Effective number of independent measurements:
+        N_eff = N / (σ²_combined · Σ 1/σ²_i)
+    Equals N when routes are uncorrelated; drops toward 1 as
+    correlations grow.  Returns None for empty input."""
+    indices = [ROUTE_INDEX[rid] for rid in route_ids if rid in ROUTE_INDEX]
+    n = len(indices)
+    if n == 0 or sigma_combined is None or sigma_combined <= 0:
+        return None
+    err_vals = np.array([ROUTES[i]['err'] for i in indices])
+    sum_inv_var = float(np.sum(1.0 / err_vals ** 2))
+    if sum_inv_var <= 0:
+        return None
+    return n / (sigma_combined ** 2 * sum_inv_var)
+
+
+def _custom_consensus(route_ids):
+    """GLS-weighted H0, uncertainty, and reduced chi^2 for a subset.
+    Returns (h0, sigma, chi2_red) — chi2_red is None for n<2 (no dof)
+    or if the covariance is singular.  Empty subset → all None.
+    chi2_red ≫ 1 means the routes disagree internally even though the
+    combined uncertainty looks small."""
+    indices = [ROUTE_INDEX[rid] for rid in route_ids if rid in ROUTE_INDEX]
+    if not indices:
+        return None, None, None
+    h0_vals  = np.array([ROUTES[i]['h0']  for i in indices])
+    err_vals = np.array([ROUTES[i]['err'] for i in indices])
+    sub_rho  = ROUTE_RHO[np.ix_(indices, indices)]
+    sub_cov  = np.outer(err_vals, err_vals) * sub_rho
+    try:
+        sub_inv = np.linalg.inv(sub_cov)
+    except np.linalg.LinAlgError:
+        return None, None, None
+    one = np.ones(len(indices))
+    denom = float(one @ sub_inv @ one)
+    if denom <= 0:
+        return None, None, None
+    h0    = float(one @ sub_inv @ h0_vals) / denom
+    sigma = (1.0 / denom) ** 0.5
+    if len(indices) < 2:
+        return h0, sigma, None
+    diff = h0_vals - h0
+    chi2_red = float(diff @ sub_inv @ diff) / (len(indices) - 1)
+    return h0, sigma, chi2_red
+
+
+_custom_set = set()    # route_ids the user has shift-clicked into the consensus
 
 # Dark-theme palette
 BG       = '#0a0a18'
@@ -351,7 +442,7 @@ ax_net.text(-0.48, (0.15 + 3.85) / 2, "Geometry",
 # and Masers to a single hub node on the far left.  Routes that
 # originate at a geometric anchor pass through this hub, so clicking
 # them lights the line all the way back here.
-ANCHOR_HUB_XY = (-0.10, 2.0)
+ANCHOR_HUB_XY = (-0.10, 1.80)
 NODES['hub'] = (ANCHOR_HUB_XY[0], ANCHOR_HUB_XY[1], '')
 for _anchor in ('parallax', 'deb', 'masers'):
     _ax_x, _ax_y, _ = NODES[_anchor]
@@ -627,22 +718,24 @@ ax_net.axis('off')
 # --------------------------------------------------------------------------
 
 ACRONYMS = [
-    ('MASER', 'Microwave Amp. by Stim. Emis. of Rad.'),
-    ('DEB',   'Detached Eclipsing Binaries'),
-    ('TRGB',  'Tip of the Red Giant Branch'),
-    ('JAGB',  'J-region Asymptotic Giant Branch'),
-    ('SBF',   'Surface Brightness Fluctuations'),
-    ('FP',    'Fundamental Plane'),
-    ('TF',    'Tully–Fisher'),
-    ('SNeIa', 'Supernovae Type Ia'),
-    ('SNeII', 'Supernovae Type II'),
-    ('EPM',   'Expanding Photosphere Method'),
+    ('MASER',    'Microwave Amp. by Stim. Emis. of Rad.'),
+    ('DEB',      'Detached Eclipsing Binaries'),
+    ('Parallax', 'Trigonometric parallax'),
+    ('TRGB',     'Tip of the Red Giant Branch'),
+    ('JAGB',     'J-region Asymptotic Giant Branch'),
+    ('Miras',    'Mira variables (long-period)'),
+    ('SBF',      'Surface Brightness Fluctuations'),
+    ('FP',       'Fundamental Plane'),
+    ('TF',       'Tully–Fisher'),
+    ('SNeIa',    'Supernovae Type Ia'),
+    ('SNeII',    'Supernovae Type II'),
+    ('EPM',      'Expanding Photosphere Method'),
 ]
 # Render each acronym as its own Text artist so we can highlight
 # individually when a route is isolated. A FancyBboxPatch behind the
 # block reproduces the original framed look.
 _acro_x   = 0.020
-_acro_top = 0.88
+_acro_top = 0.90
 _acro_lh  = 0.0140      # figure-y per line for monospace fontsize=8
 _acro_pad = 0.006
 _acro_w   = 0.275       # bbox width
@@ -657,7 +750,7 @@ fig.add_artist(mpatches.FancyBboxPatch(
 acronym_texts = {}
 for _i, (_k, _v) in enumerate(ACRONYMS):
     _t = fig.text(_acro_x, _acro_top - _acro_pad - _i * _acro_lh,
-                  f"{_k:<5s} {_v}",
+                  f"{_k:<8s} {_v}",
                   ha='left', va='top',
                   family='monospace', fontsize=8.0, color=TEXT_DIM)
     acronym_texts[_k] = _t
@@ -700,24 +793,137 @@ tension_text = ax_h0.text(
     visible=False)
 
 
-def _update_tension_display(route_id):
-    if route_id is None:
+def _render_tension(h0, sigma):
+    """Show the CMB-tension for an (H0, sigma) pair, or hide if either
+    is None.  Used by single-route isolation, custom-consensus, and the
+    tour's per-pair display."""
+    if h0 is None or sigma is None:
         tension_text.set_visible(False)
         return
-    r = next((rr for rr in ROUTES if rr['id'] == route_id), None)
-    if r is None:
-        tension_text.set_visible(False)
-        return
-    sigma = abs(r['h0'] - CMB['value']) / (r['err']**2 + CMB['err']**2) ** 0.5
-    if sigma >= 3.0:
+    t = abs(h0 - CMB['value']) / (sigma ** 2 + CMB['err'] ** 2) ** 0.5
+    if t >= 3.0:
         col = '#ff8787'
-    elif sigma >= 2.0:
+    elif t >= 2.0:
         col = '#ffcc66'
     else:
         col = '#6dd4af'
-    tension_text.set_text(f"{sigma:.1f}σ from CMB")
+    tension_text.set_text(f"{t:.1f}σ from CMB")
     tension_text.set_color(col)
     tension_text.set_visible(True)
+
+
+def _update_tension_display(route_id):
+    if route_id is None:
+        _render_tension(None, None)
+        return
+    r = next((rr for rr in ROUTES if rr['id'] == route_id), None)
+    if r is None:
+        _render_tension(None, None)
+        return
+    _render_tension(r['h0'], r['err'])
+
+
+# Custom-consensus readout: shift-click routes to add/remove them; a
+# GLS-weighted H0 ± σ shows in the empty strip below the histogram
+# inset.  When the set is empty an instructional hint shows in dim
+# color so the feature is discoverable.
+custom_consensus_text = ax_h0.text(
+    0.02, 1.06, 'Custom: shift-click routes to combine',
+    transform=ax_h0.transAxes,
+    ha='left', va='bottom',
+    fontsize=10, fontweight='normal', color=TEXT_DIM,
+    clip_on=False)
+custom_paths_text = ax_h0.text(
+    0.02, 1.13, '', transform=ax_h0.transAxes,
+    ha='left', va='bottom',
+    fontsize=8.5, fontstyle='italic', color='#b48cff',
+    clip_on=False, visible=False)
+
+
+def _set_custom_paths_label(route_ids):
+    """Render the comma-separated list of route names above the
+    custom-consensus readout. Hidden when the list is empty."""
+    if not route_ids:
+        custom_paths_text.set_visible(False)
+        return
+    ordered = sorted(route_ids, key=lambda rid: ROUTE_INDEX.get(rid, 1e9))
+    names = [next((r['name'] for r in ROUTES if r['id'] == rid), rid)
+             for rid in ordered]
+    custom_paths_text.set_text('Includes:  ' + ',  '.join(names))
+    custom_paths_text.set_visible(True)
+
+
+def _update_custom_consensus_display():
+    h0, sigma, chi2_red = _custom_consensus(_custom_set)
+    if h0 is None:
+        custom_consensus_text.set_text('Custom: shift-click routes to combine')
+        custom_consensus_text.set_color(TEXT_DIM)
+        custom_consensus_text.set_fontweight('normal')
+        _set_custom_paths_label([])
+        # No custom set — fall back to isolation tension/histogram (if any).
+        if active['id'] is not None:
+            _update_tension_display(active['id'])
+            _highlight_hist(active['id'])
+        else:
+            _render_tension(None, None)
+            _highlight_hist_set([])
+        _highlight_heat_cells([])
+        _update_posterior(None, None)
+    else:
+        n = len(_custom_set)
+        # Single-decimal precision matches the approximate ρ matrix.
+        chi_str = (f"   (χ²/N = {chi2_red:.1f})"
+                   if chi2_red is not None else '')
+        n_eff = _effective_n(_custom_set, sigma)
+        eff_str = (f", eff={n_eff:.1f}"
+                   if n_eff is not None and n >= 2 else '')
+        custom_consensus_text.set_text(
+            f"Custom (n={n}{eff_str}):  H₀ = {h0:.1f} ± {sigma:.1f}{chi_str}")
+        custom_consensus_text.set_color('#b48cff')
+        custom_consensus_text.set_fontweight('bold')
+        _set_custom_paths_label(_custom_set)
+        _render_tension(h0, sigma)
+        _highlight_hist_set(_custom_set)
+        _highlight_heat_cells(_custom_set)
+        _update_posterior(h0, sigma)
+    _update_loo_display()
+
+
+def _toggle_custom_consensus_member(route_id):
+    if route_id not in ROUTE_INDEX:
+        return
+    if route_id in _custom_set:
+        _custom_set.discard(route_id)
+        info(f"removed {route_id} from custom consensus  "
+             f"(n={len(_custom_set)})")
+    else:
+        _custom_set.add(route_id)
+        info(f"added {route_id} to custom consensus  "
+             f"(n={len(_custom_set)})")
+    _update_custom_consensus_display()
+    fig.canvas.draw_idle()
+
+
+import re as _re
+
+
+def _short_ref(ref):
+    """Pull "Author YYYY" from a free-form ref string. Returns ''
+    if no year is present.  Captures multi-word author names like
+    "de Jaeger" by grabbing everything before " et al."."""
+    if not ref:
+        return ''
+    m_year = _re.search(r'(\d{4})', ref)
+    if not m_year:
+        return ''
+    m_author = _re.match(r'^(.+?)\s+et\s+al\.', ref)
+    if m_author:
+        author = m_author.group(1).strip()
+    else:
+        m_first = _re.search(r'\b([A-Z][A-Za-z0-9]+)', ref)
+        author = m_first.group(1) if m_first else ''
+    return f"{author} {m_year.group(1)}".strip()
+
 
 # Error bars — all created invisible, revealed by animation.
 # Also make the errorbar markers, route-name labels, and an invisible
@@ -741,16 +947,24 @@ for i, r in enumerate(ROUTES):
     h0_pick[line] = r['id']
     h0_bars[r['id']] = eb
 
-    # Route-name text (pickable)
-    nm = ax_h0.text(64.3, y, r['name'], ha='right', va='center',
+    # Route-name text (pickable). Append "FirstAuthor YYYY" when a
+    # ref is available so the publication year shows up in the panel.
+    # Anchored on the right side of the panel — past xlim — so the
+    # longer "(Author YYYY)" labels don't overflow the figure on the
+    # left.  clip_on=False lets the text render in the right margin.
+    _short = _short_ref(r.get('ref', ''))
+    _label = f"{r['name']}  ({_short})" if _short else r['name']
+    nm = ax_h0.text(82.7, y, _label, ha='left', va='center',
                     fontsize=10, fontweight='medium', color=TEXT,
-                    picker=True)
+                    picker=True, clip_on=False)
     h0_pick[nm] = r['id']
     h0_name_text_by_id[r['id']] = nm
-    # value text
+    # H0 value — kept inside the data area, just to the left of the
+    # name column.
     h0_value_text_by_id[r['id']] = ax_h0.text(
         81.2, y, f"{r['h0']:.2f} ± {r['err']:.2f}",
-        ha='left', va='center', fontsize=9, color=TEXT_DIM)
+        ha='right', va='center', fontsize=9, color=TEXT_DIM,
+        clip_on=False)
     # transparent clickable rectangle spanning the row for easier hitting
     rect = mpatches.Rectangle((63, y - 0.5 * ROW_STEP), 19.5, ROW_STEP,
                               facecolor='none', edgecolor='none',
@@ -767,6 +981,220 @@ for side in ('top', 'right', 'left'):
     ax_h0.spines[side].set_visible(False)
 ax_h0.tick_params(axis='x', labelsize=10, colors=TEXT_DIM)
 ax_h0.grid(axis='x', color=GRID, linewidth=0.4)
+
+
+# --- H0 distribution histogram (vertical, left of the CMB line) ----
+# Inset on the empty left strip of the H0 panel.  Horizontal bars,
+# H0 bin values on the y-axis, count on the x-axis.  CMB shown red,
+# routes shown in TEXT_DIM until a route is isolated, in which case
+# the matching bar takes that route's color.
+def _h0_bin(value):
+    return int(round(value))
+
+
+_bin_routes = {}
+for _r in ROUTES:
+    _bin_routes.setdefault(_h0_bin(_r['h0']), []).append(_r['id'])
+
+hist_ax = ax_h0.inset_axes([0.02, 0.45, 0.16, 0.50], facecolor=PANEL_BG)
+HIST_DEFAULT = '#c8ccd8'        # lighter than TEXT_DIM so colored boxes pop
+
+# One small box per route per bin, stacked horizontally.  Tracked by
+# route_id so isolation highlights only that route's box.
+hist_boxes = {}     # route_id -> Rectangle
+for _b, _rids in _bin_routes.items():
+    for _i, _rid in enumerate(_rids):
+        _rect = mpatches.Rectangle((_i, _b - 0.4), 1, 0.8,
+                                   facecolor=HIST_DEFAULT,
+                                   edgecolor=BG, linewidth=0.4)
+        hist_ax.add_patch(_rect)
+        hist_boxes[_rid] = _rect
+
+# CMB box — red, shown for context, never re-colored
+hist_ax.add_patch(mpatches.Rectangle(
+    (0, _h0_bin(CMB['value']) - 0.4), 1, 0.8,
+    facecolor='#ff8787', edgecolor=BG, linewidth=0.4))
+
+_bin_counts = [len(_bin_routes[b]) for b in _bin_routes]
+
+_max_count = max(_bin_counts)
+hist_ax.set_xlim(0, _max_count + 0.5)
+hist_ax.set_ylim(66, 76.5)
+hist_ax.set_yticks([67, 70, 72, 73, 74, 75])
+hist_ax.set_xticks([])
+hist_ax.tick_params(labelsize=7, colors=TEXT_DIM, length=2, pad=1)
+for _s in ('top', 'right', 'bottom'):
+    hist_ax.spines[_s].set_visible(False)
+hist_ax.spines['left'].set_color(SPINE)
+hist_ax.spines['left'].set_linewidth(0.5)
+
+# Gaussian posterior curve overlaid on the histogram.  Driven by the
+# current custom-consensus set (or a tour pair).
+posterior_line, = hist_ax.plot(
+    [], [], color='#b48cff', linewidth=2.0, alpha=0.9, zorder=4)
+posterior_line.set_visible(False)
+
+
+def _update_posterior(h0=None, sigma=None):
+    """Draw a horizontal bell curve at the given (h0, sigma).  The
+    histogram has H0 on its y-axis and counts on x, so the posterior
+    appears as a sideways bump peaking at y=h0."""
+    if h0 is None or sigma is None or sigma <= 0:
+        posterior_line.set_visible(False)
+        return
+    y_lo, y_hi = 66.0, 76.5
+    y_grid = np.linspace(y_lo, y_hi, 200)
+    pdf = np.exp(-(y_grid - h0) ** 2 / (2.0 * sigma ** 2))
+    scale = (_max_count + 0.5) * 0.85
+    posterior_line.set_data(scale * pdf, y_grid)
+    posterior_line.set_visible(True)
+
+
+def _highlight_hist(route_id):
+    for _rect in hist_boxes.values():
+        _rect.set_facecolor(HIST_DEFAULT)
+    if route_id is None:
+        return
+    r = next((rr for rr in ROUTES if rr['id'] == route_id), None)
+    if r is None or route_id not in hist_boxes:
+        return
+    hist_boxes[route_id].set_facecolor(r['color'])
+
+
+def _highlight_hist_set(route_ids):
+    """Color the histogram boxes for every route in the iterable."""
+    for _rect in hist_boxes.values():
+        _rect.set_facecolor(HIST_DEFAULT)
+    for rid in route_ids:
+        r = next((rr for rr in ROUTES if rr['id'] == rid), None)
+        if r and rid in hist_boxes:
+            hist_boxes[rid].set_facecolor(r['color'])
+
+
+# --- Pairwise tension heatmap (bottom-right corner) ----------------
+def _compute_tension_matrix():
+    """13x13 matrix of σ_ij = |H₀_i − H₀_j| / √(σ_i² + σ_j² − 2 ρ_ij σ_i σ_j).
+    Uses the loaded route correlation matrix."""
+    n = len(ROUTES)
+    h = np.array([r['h0'] for r in ROUTES])
+    e = np.array([r['err'] for r in ROUTES])
+    cov = np.outer(e, e) * ROUTE_RHO
+    var = (np.outer(e**2, np.ones(n))
+           + np.outer(np.ones(n), e**2)
+           - 2 * cov)
+    var = np.where(var > 1e-10, var, 1e-10)
+    T = np.abs(np.subtract.outer(h, h)) / np.sqrt(var)
+    np.fill_diagonal(T, 0)
+    return T
+
+
+_HEAT_LABELS = ['Baseline', 'v01', 'v02', 'v06', 'SH0ES', 'CCHP/EDD',
+                'Pop-II', 'MCP', 'Pop-I', 'CF4', 'Pop-Mix', 'DESI',
+                'adh0cc']
+heat_ax = fig.add_axes([0.045, 0.550, 0.172, 0.152], facecolor=PANEL_BG)
+heat_im = heat_ax.imshow(_compute_tension_matrix(),
+                         cmap='RdYlGn_r', vmin=0, vmax=2.5,
+                         aspect='auto', interpolation='nearest')
+heat_ax.set_xticks(range(len(ROUTES)))
+heat_ax.set_yticks(range(len(ROUTES)))
+heat_ax.set_xticklabels(_HEAT_LABELS, rotation=90, fontsize=6,
+                        color=TEXT_DIM)
+heat_ax.set_yticklabels(_HEAT_LABELS, fontsize=6, color=TEXT_DIM)
+heat_ax.tick_params(length=0, pad=1)
+for _s in heat_ax.spines.values():
+    _s.set_color(SPINE)
+    _s.set_linewidth(0.5)
+heat_ax.text(0.5, 1.05, 'pairwise route tension (σ)',
+             transform=heat_ax.transAxes, ha='center', va='bottom',
+             fontsize=7.5, color=TEXT_DIM)
+
+# --- Leave-one-out panel (bottom-right corner) --------------------
+def _compute_loo(route_ids):
+    """For each route in the iterable, compute the GLS-combined H0
+    if that route is removed.  Returns a dict
+        rid → (h0_without, sigma_without, h0_without − h0_with_all).
+    Returns {} if the input has fewer than 2 routes."""
+    rids = list(route_ids)
+    if len(rids) < 2:
+        return {}
+    full_h0, _, _ = _custom_consensus(rids)
+    if full_h0 is None:
+        return {}
+    out = {}
+    for rid in rids:
+        sub = [r for r in rids if r != rid]
+        if not sub:
+            continue
+        sub_h0, sub_sig, _ = _custom_consensus(sub)
+        if sub_h0 is None:
+            continue
+        out[rid] = (sub_h0, sub_sig, sub_h0 - full_h0)
+    return out
+
+
+# LOO column placed just below the little histogram, on the left.
+# Δ values are computed against the full *custom* set, not the full
+# 13-route list.
+loo_ax = fig.add_axes([0.075, 0.225, 0.122, 0.090], facecolor=PANEL_BG)
+loo_ax.set_xticks([]); loo_ax.set_yticks([])
+loo_ax.set_xlim(0, 1); loo_ax.set_ylim(0, 1)
+for _s in loo_ax.spines.values():
+    _s.set_color(SPINE)
+    _s.set_linewidth(0.5)
+loo_title = loo_ax.text(
+    0.5, 1.05, 'LOO  (Δ from custom)',
+    transform=loo_ax.transAxes, ha='center', va='bottom',
+    fontsize=7, color=TEXT_DIM, visible=False)
+loo_text = loo_ax.text(
+    0.04, 0.95, '',
+    transform=loo_ax.transAxes, ha='left', va='top',
+    fontsize=6.5, family='monospace', color=TEXT_DIM)
+
+
+def _update_loo_display():
+    if len(_custom_set) < 2:
+        loo_text.set_text('')
+        loo_title.set_visible(False)
+        return
+    results = _compute_loo(list(_custom_set))
+    if not results:
+        loo_text.set_text('(singular)')
+        loo_title.set_visible(True)
+        return
+    loo_title.set_visible(True)
+    items = sorted(results.items(), key=lambda kv: -abs(kv[1][2]))
+    lines = []
+    # Use the same short labels as the heatmap for compact rows.
+    label_map = dict(zip([r['id'] for r in ROUTES], _HEAT_LABELS))
+    for rid, (h0, sig, dh) in items[:8]:
+        short = label_map.get(rid, rid)[:10]
+        sign = '+' if dh >= 0 else '−'
+        lines.append(f'{short:<10}{sign}{abs(dh):.2f}')
+    loo_text.set_text('\n'.join(lines))
+
+
+_heat_highlights = []   # Rectangle artists outlining selected cells
+
+
+def _highlight_heat_cells(route_ids):
+    """Outline the heatmap cells corresponding to every pair within
+    route_ids.  Single-route or empty input clears any prior outline."""
+    for _r in _heat_highlights:
+        try:
+            _r.remove()
+        except Exception:
+            pass
+    _heat_highlights.clear()
+    indices = [ROUTE_INDEX[rid] for rid in route_ids if rid in ROUTE_INDEX]
+    if len(indices) < 2:
+        return
+    for i, j in combinations(indices, 2):
+        for r, c in ((i, j), (j, i)):
+            rect = mpatches.Rectangle(
+                (c - 0.5, r - 0.5), 1, 1,
+                fill=False, edgecolor='#3a1d6e', linewidth=1.6)
+            heat_ax.add_patch(rect)
+            _heat_highlights.append(rect)
 
 
 # --------------------------------------------------------------------------
@@ -877,8 +1305,10 @@ def _set_errorbar_alpha(eb, alpha):
 NODE_TO_ACRO = {
     'masers':    ['MASER'],
     'deb':       ['DEB'],
+    'parallax':  ['Parallax'],
     'trgb':      ['TRGB'],
     'jagb':      ['JAGB'],
+    'miras':     ['Miras'],
     'sbf':       ['SBF'],
     'fp':        ['FP'],
     'tf':        ['TF'],
@@ -914,6 +1344,51 @@ def _route_acros_used(route_id):
         for n in nodes:
             used.update(NODE_TO_ACRO.get(n, []))
     return used
+
+
+# Acronym key → primary node id (used when the user clicks an entry
+# in the bottom-left list to open that node's .rtf reference).
+ACRONYM_TO_NODE = {
+    'MASER':    'masers',
+    'DEB':      'deb',
+    'Parallax': 'parallax',
+    'TRGB':     'trgb',
+    'JAGB':     'jagb',
+    'Miras':    'miras',
+    'SBF':      'sbf',
+    'FP':       'fp',
+    'TF':       'tf',
+    'SNeIa':    'snia',
+    'SNeII':    'sneii',
+    'EPM':      'sneii_epm',
+}
+
+
+def _open_node_rtf(node_id):
+    """Open the matching .rtf for a node in the OS default viewer.
+    Used by the bottom-left acronym list (mouse-over still highlights
+    routes; click opens the deeper RTF reference)."""
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    raw_label = NODES[node_id][2]
+    stems = [
+        raw_label.replace('\n', '_').strip(),
+        raw_label.replace('\n', ' ').strip(),
+        raw_label.split('\n', 1)[0].strip(),
+        node_id,
+    ]
+    seen = set()
+    for stem in stems:
+        if not stem or stem in seen:
+            continue
+        seen.add(stem)
+        path = os.path.join(base_dir, stem + '.rtf')
+        if os.path.isfile(path):
+            if _open_externally(path):
+                info(f'opened {os.path.basename(path)}')
+            else:
+                info(f'could not open {os.path.basename(path)}')
+            return
+    info(f"no .rtf for {node_id}")
 
 
 # Reverse index: acronym key → set of route_ids that pass through any
@@ -1017,7 +1492,7 @@ def mkbtn(x, y, w, h, label):
 btn_save     = mkbtn(0.06, 0.952, 0.10, 0.028, 'Save PNG')
 btn_save_pdf = mkbtn(0.17, 0.952, 0.10, 0.028, 'Save PDF')
 btn_clear    = mkbtn(0.28, 0.952, 0.09, 0.028, 'Reset')
-btn_tour     = mkbtn(0.38, 0.952, 0.09, 0.028, 'Tour')
+btn_tour     = mkbtn(0.38, 0.952, 0.09, 0.028, 'Pairs')
 btn_fig1     = mkbtn(0.67, 0.905, 0.12, 0.025, 'H0DN Fig. 1')
 btn_tab4     = mkbtn(0.80, 0.905, 0.12, 0.025, 'H0DN Tab. 4')
 
@@ -1025,7 +1500,7 @@ btn_tab4     = mkbtn(0.80, 0.905, 0.12, 0.025, 'H0DN Tab. 4')
 fig.text(0.485, 0.967, 'Tour ms', color=TEXT_DIM, fontsize=8,
          ha='left', va='center')
 speed_ax = fig.add_axes([0.525, 0.961, 0.08, 0.014], facecolor='#10121f')
-speed_slider = Slider(speed_ax, '', 40, 1200, valinit=180, valstep=20,
+speed_slider = Slider(speed_ax, '', 40, 2400, valinit=1220, valstep=20,
                       color='#5588cc', track_color=GRID,
                       initcolor='none')
 speed_slider.valtext.set_color(TEXT_DIM)
@@ -1099,10 +1574,19 @@ btn_tab4.on_clicked(on_tab4)
 
 
 def on_clear(_):
+    cleared = []
+    if _cancel_tour():
+        cleared.append('tour')
     if active['id'] is not None:
         active['id'] = None
         _reset_isolation()
-        info('cleared isolation')
+        cleared.append('isolation')
+    if _custom_set:
+        _custom_set.clear()
+        _update_custom_consensus_display()
+        cleared.append('custom consensus')
+    if cleared:
+        info('cleared ' + ' & '.join(cleared))
         fig.canvas.draw_idle()
     else:
         info('nothing to clear')
@@ -1116,72 +1600,155 @@ _tour_state = {'timer': None, 'queue': []}
 
 
 def _cancel_tour():
-    """Stop a running tour and reset to the full map. Returns True if a
-    tour was active."""
+    """Stop a running OR paused tour and reset to the full map.
+    Returns True if a tour was active or paused."""
     t = _tour_state.get('timer')
-    if t is None:
+    paused = _tour_state.get('paused', False)
+    if t is None and not paused:
         return False
-    try:
-        t.stop()
-    except Exception:
-        pass
+    if t is not None:
+        try:
+            t.stop()
+        except Exception:
+            pass
     _tour_state['timer'] = None
+    _tour_state['paused'] = False
     _tour_state['queue'] = []
     if active['id'] is not None:
         active['id'] = None
-        _reset_isolation()
+    _reset_isolation()
+    _highlight_hist_set([])
+    _update_custom_consensus_display()
     fig.canvas.draw_idle()
     return True
+
+
+def _tour_step():
+    queue = _tour_state.get('queue', [])
+    if not queue:
+        # End of tour
+        timer = _tour_state.get('timer')
+        if timer is not None:
+            try:
+                timer.stop()
+            except Exception:
+                pass
+        _tour_state['timer'] = None
+        _tour_state['paused'] = False
+        active['id'] = None
+        _reset_isolation()
+        _highlight_hist_set([])
+        _update_posterior(None, None)
+        _update_custom_consensus_display()
+        info(DEFAULT_STATUS)
+        fig.canvas.draw_idle()
+        return
+    # Each pair is split into two micro-steps so the network visual
+    # flashes A, then B, while the combined readout stays constant.
+    phase, rid_a, rid_b, label = queue.pop(0)
+    focus = rid_a if phase == 'A' else rid_b
+    _highlight_routes([focus])
+    _highlight_hist_set([focus])
+    ra = next((r for r in ROUTES if r['id'] == rid_a), None)
+    rb = next((r for r in ROUTES if r['id'] == rid_b), None)
+    combined_h0, combined_sigma, chi2_red = _custom_consensus([rid_a, rid_b])
+    if combined_h0 is not None:
+        chi_str = (f"   (χ²/N = {chi2_red:.1f})"
+                   if chi2_red is not None else '')
+        n_eff = _effective_n([rid_a, rid_b], combined_sigma)
+        eff_str = (f" (eff={n_eff:.1f})" if n_eff is not None else '')
+        custom_consensus_text.set_text(
+            f"Pair combined{eff_str}: H₀ = {combined_h0:.1f} ± "
+            f"{combined_sigma:.1f}{chi_str}")
+        custom_consensus_text.set_color('#b48cff')
+        custom_consensus_text.set_fontweight('bold')
+        _set_custom_paths_label([rid_a, rid_b])
+        _render_tension(combined_h0, combined_sigma)
+        _highlight_heat_cells([rid_a, rid_b])
+        _update_posterior(combined_h0, combined_sigma)
+    if ra and rb:
+        sigma = abs(ra['h0'] - rb['h0']) / (
+            ra['err'] ** 2 + rb['err'] ** 2) ** 0.5
+        info(f"{label}:  {ra['h0']:.2f} vs {rb['h0']:.2f}  "
+             f"({sigma:.1f}σ)")
+    else:
+        info(label)
+    fig.canvas.draw_idle()
 
 
 def _start_tour(interval_ms=None):
     _cancel_tour()
     if interval_ms is None:
         interval_ms = int(speed_slider.val)
-    # Anchor the comparison on the currently-isolated route (if any),
-    # otherwise on Baseline.  The tour then steps through every other
-    # route paired against the anchor.
-    anchor_id = active['id'] or 'baseline'
-    anchor = next((r for r in ROUTES if r['id'] == anchor_id), None)
-    if anchor is None:
-        anchor_id = 'baseline'
-        anchor = next(r for r in ROUTES if r['id'] == 'baseline')
+    # Two modes:
+    #   • A route is isolated → "anchor mode": pair the active route
+    #     against every other route (12 pairs).
+    #   • Nothing isolated → "all-pairs mode": iterate through every
+    #     C(13,2) = 78 pair combination of routes.
+    if active['id'] is not None:
+        anchor_id = active['id']
+        anchor = next((r for r in ROUTES if r['id'] == anchor_id), None)
+        pairs = [
+            (anchor_id, r['id'], f"{anchor['name']} vs {r['name']}")
+            for r in ROUTES if r['id'] != anchor_id
+        ]
+    else:
+        pairs = []
+        for (ra_id, rb_id) in combinations([r['id'] for r in ROUTES], 2):
+            ra = next(r for r in ROUTES if r['id'] == ra_id)
+            rb = next(r for r in ROUTES if r['id'] == rb_id)
+            pairs.append((ra_id, rb_id, f"{ra['name']} vs {rb['name']}"))
+    # Expand each pair to two micro-steps: ('A', a, b, label) then ('B', …)
+    # so the network and histogram flash A, then B, while the combined
+    # readout stays constant.
     _tour_state['queue'] = [
-        (anchor_id, r['id'], f"{anchor['name']} vs {r['name']}")
-        for r in ROUTES if r['id'] != anchor_id
+        (phase, ra, rb, lab)
+        for ra, rb, lab in pairs
+        for phase in ('A', 'B')
     ]
     active['id'] = None
-    timer = fig.canvas.new_timer(interval=interval_ms)
-
-    def _step():
-        if not _tour_state['queue']:
-            timer.stop()
-            _tour_state['timer'] = None
-            active['id'] = None
-            _reset_isolation()
-            info(DEFAULT_STATUS)
-            fig.canvas.draw_idle()
-            return
-        rid_a, rid_b, label = _tour_state['queue'].pop(0)
-        _highlight_routes((rid_a, rid_b))
-        ra = next((r for r in ROUTES if r['id'] == rid_a), None)
-        rb = next((r for r in ROUTES if r['id'] == rid_b), None)
-        if ra and rb:
-            sigma = abs(ra['h0'] - rb['h0']) / (
-                ra['err'] ** 2 + rb['err'] ** 2) ** 0.5
-            info(f"{label}:  {ra['h0']:.2f} vs {rb['h0']:.2f}  "
-                 f"({sigma:.1f}σ)")
-        else:
-            info(label)
-        fig.canvas.draw_idle()
-
-    timer.add_callback(_step)
+    _tour_state['paused'] = False
+    # Half-step interval so total time per pair matches the slider value.
+    timer = fig.canvas.new_timer(interval=max(20, interval_ms // 2))
+    timer.add_callback(_tour_step)
     timer.start()
     _tour_state['timer'] = timer
 
 
+def _pause_tour():
+    timer = _tour_state.get('timer')
+    if timer is None:
+        return
+    try:
+        timer.stop()
+    except Exception:
+        pass
+    _tour_state['timer'] = None
+    _tour_state['paused'] = True
+    info('tour paused — click Tour to resume')
+
+
+def _resume_tour():
+    if not _tour_state.get('queue'):
+        _tour_state['paused'] = False
+        return
+    interval_ms = int(speed_slider.val)
+    # Half-step like _start_tour because the queue holds A/B micro-steps.
+    timer = fig.canvas.new_timer(interval=max(20, interval_ms // 2))
+    timer.add_callback(_tour_step)
+    timer.start()
+    _tour_state['timer'] = timer
+    _tour_state['paused'] = False
+    info('tour resumed')
+
+
 def on_tour(_):
-    _start_tour()
+    if _tour_state.get('timer') is not None:
+        _pause_tour()
+    elif _tour_state.get('paused'):
+        _resume_tour()
+    else:
+        _start_tour()
 
 
 btn_tour.on_clicked(on_tour)
@@ -1207,6 +1774,7 @@ def _reset_isolation():
     _reset_acronym_highlight()
     _reset_route_highlight()
     _update_tension_display(None)
+    _highlight_hist(None)
 
 
 def _isolate(route_id):
@@ -1232,6 +1800,7 @@ def _isolate(route_id):
     _highlight_acronyms(route_id)
     _highlight_route(route_id)
     _update_tension_display(route_id)
+    _highlight_hist(route_id)
     for rid, eb in h0_bars.items():
         _set_errorbar_alpha(eb, 1.0 if rid == route_id else 0.18)
     for rid, labels in route_labels.items():
@@ -1337,7 +1906,7 @@ def _node_info_path(node_id):
         if not stem or stem in seen:
             continue
         seen.add(stem)
-        candidates += [stem + '.rtf', stem + '.txt', stem + '.md', stem]
+        candidates += [stem + '.md', stem + '.txt', stem + '.rtf', stem]
     for fname in candidates:
         path = os.path.join(base_dir, fname)
         if os.path.isfile(path):
@@ -1666,13 +2235,13 @@ def _open_node_popup(node_id):
     if not path:
         info(f'no info file for {label!r}')
         return
-    if path.lower().endswith('.rtf'):
-        if _open_externally(path):
-            info(f'opened {os.path.basename(path)} in default viewer')
-        else:
-            info(f'could not open {os.path.basename(path)}')
-        return
-    _show_text_popup(label, path)
+    # Open every info file (md/txt/rtf) in the OS default viewer —
+    # the in-app tk popup does not work reliably under matplotlib's
+    # macOS backend.
+    if _open_externally(path):
+        info(f'opened {os.path.basename(path)} in default viewer')
+    else:
+        info(f'could not open {os.path.basename(path)}')
 
 
 def _route_info_path(route_id):
@@ -1730,7 +2299,13 @@ def on_button_press(event):
     # route under the popup.
     if event.inaxes is not None and event.inaxes in _cartoon_state.get('axes', []):
         return
-    # Any user click cancels an in-progress tour.
+    # Tour button click toggles pause/resume — don't cancel.
+    # Reset button click is handled by on_clear, which itself calls
+    # _cancel_tour and reports the result; skip here to avoid double-
+    # cancel + misleading "nothing to clear" status.
+    if event.inaxes is btn_tour.ax or event.inaxes is btn_clear.ax:
+        return
+    # Any other user click cancels an in-progress tour.
     _cancel_tour()
     if event.button != 1:
         return
@@ -1743,35 +2318,65 @@ def on_button_press(event):
         if not (cx_ <= fx <= cx_ + cw_ and cy_ <= fy <= cy_ + ch_):
             _close_cartoon_popup()
             return
-    # First check arxiv arrow overlays
-    for arrow, url in arxiv_links.items():
+    # Shift-click OR double-click adds/removes routes from the
+    # custom-consensus set.  Double-click is provided as a fallback
+    # because matplotlib's macOS backend does not always populate
+    # event.key for modifier keys.
+    # Click on a heatmap cell → set the custom-consensus to that pair.
+    if event.inaxes is heat_ax:
+        if event.xdata is not None and event.ydata is not None:
+            j = int(round(event.xdata))
+            i = int(round(event.ydata))
+            if (0 <= i < len(ROUTES) and 0 <= j < len(ROUTES)
+                    and i != j):
+                _custom_set.clear()
+                _custom_set.update([ROUTES[i]['id'], ROUTES[j]['id']])
+                _update_custom_consensus_display()
+                fig.canvas.draw_idle()
+        return
+    # Click on an entry in the bottom-left acronym/node list opens
+    # that node's .rtf reference (mouse-over still highlights routes).
+    for _acro_key, _at in acronym_texts.items():
         try:
-            hit, _ = arrow.contains(event)
+            _hit, _ = _at.contains(event)
         except Exception:
-            hit = False
-        if hit:
-            webbrowser.open(url)
-            info(f"opened {url}")
+            _hit = False
+        if _hit:
+            _node_id = ACRONYM_TO_NODE.get(_acro_key)
+            if _node_id:
+                _open_node_rtf(_node_id)
             return
-    # Then check node circles — clicking a node opens its info popup.
-    for nid, art in node_artists.items():
-        try:
-            hit, _ = art.contains(event)
-        except Exception:
-            hit = False
-        if hit:
-            _open_node_popup(nid)
-            return
-    # Then check legend route-name texts — clicking the name opens
-    # the route's info file (if one exists). Falls through to
-    # isolation when no file is found.
-    for _txt, _r in zip(legend.get_texts(), ROUTES):
-        try:
-            hit, _ = _txt.contains(event)
-        except Exception:
-            hit = False
-        if hit and _open_route_popup(_r['id']):
-            return
+    # Shift-click OR double-click adds/removes routes from the
+    # custom-consensus set.  Double-click is provided as a fallback
+    # because matplotlib's macOS backend does not always populate
+    # event.key for modifier keys.
+    _shift = bool(event.key and 'shift' in event.key) or bool(
+        getattr(event, 'dblclick', False))
+    if not _shift:
+        for arrow, url in arxiv_links.items():
+            try:
+                hit, _ = arrow.contains(event)
+            except Exception:
+                hit = False
+            if hit:
+                webbrowser.open(url)
+                info(f"opened {url}")
+                return
+        for nid, art in node_artists.items():
+            try:
+                hit, _ = art.contains(event)
+            except Exception:
+                hit = False
+            if hit:
+                _open_node_popup(nid)
+                return
+        for _txt, _r in zip(legend.get_texts(), ROUTES):
+            try:
+                hit, _ = _txt.contains(event)
+            except Exception:
+                hit = False
+            if hit and _open_route_popup(_r['id']):
+                return
     candidates = []
     for art in list(line_to_id) + list(legend_to_id) + list(h0_pick):
         try:
@@ -1784,17 +2389,45 @@ def on_button_press(event):
                 candidates.append((art.get_zorder(), rid))
     if not candidates:
         return
+    # Shared path segments mean a click can hit multiple routes at
+    # once.  For shift-click, prefer routes NOT already in the custom
+    # set so the click is interpreted as "add new" rather than
+    # accidentally "remove existing".  Falls back to all candidates
+    # when every match is already in the set (user wants to remove).
+    if _shift and len(candidates) > 1:
+        new_only = [c for c in candidates if c[1] not in _custom_set]
+        if new_only:
+            candidates = new_only
     candidates.sort(key=lambda t: t[0], reverse=True)
-    _toggle_isolation(candidates[0][1])
+    rid = candidates[0][1]
+    if _shift:
+        _toggle_custom_consensus_member(rid)
+    else:
+        _toggle_isolation(rid)
 
 
 fig.canvas.mpl_connect('button_press_event', on_button_press)
 
 
 def on_key_press(event):
-    if event.key == 'escape' and (_cartoon_state.get('artists')
-                                  or _cartoon_state.get('axes')):
+    popup_open = bool(_cartoon_state.get('artists')
+                      or _cartoon_state.get('axes'))
+    if event.key == 'escape' and popup_open:
         _close_cartoon_popup()
+        return
+    # Enter (carriage return) acts like the Reset button — only when
+    # the popup isn't open, so the two contexts stay distinct.
+    if event.key in ('enter', 'return') and not popup_open:
+        on_clear(None)
+        return
+    # 'a' opens the arXiv paper for the currently-isolated route.
+    if event.key == 'a' and active['id'] is not None and not popup_open:
+        url = route_arxiv.get(active['id'])
+        if url:
+            webbrowser.open(url)
+            info(f"opened {url}")
+        else:
+            info('no arXiv link for this route')
         return
     # Up/Down arrows step through routes when one is isolated.
     if event.key in ('up', 'down') and active['id'] is not None:
@@ -1819,8 +2452,8 @@ fig.canvas.mpl_connect('key_press_event', on_key_press)
 # route line, legend entry, or H0-panel marker.
 # --------------------------------------------------------------------------
 
-DEFAULT_STATUS = ('click a route to isolate · click a node for info · '
-                  'click ↗ for the arXiv paper')
+DEFAULT_STATUS = ('click route to isolate · shift-click to add to custom · '
+                  'click node for info · ↗ for arXiv')
 _hover_state = {'rid': None}
 
 
