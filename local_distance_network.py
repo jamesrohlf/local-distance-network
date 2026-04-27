@@ -352,18 +352,21 @@ def _effective_n(route_ids, sigma_combined):
     return n / (sigma_combined ** 2 * sum_inv_var)
 
 
-def _custom_consensus(route_ids):
+def _custom_consensus(route_ids, rho=None):
     """GLS-weighted H0, uncertainty, and reduced chi^2 for a subset.
     Returns (h0, sigma, chi2_red) — chi2_red is None for n<2 (no dof)
     or if the covariance is singular.  Empty subset → all None.
     chi2_red ≫ 1 means the routes disagree internally even though the
-    combined uncertainty looks small."""
+    combined uncertainty looks small.  Optional ``rho`` overrides the
+    global ROUTE_RHO (used by the sensitivity analysis)."""
+    if rho is None:
+        rho = ROUTE_RHO
     indices = [ROUTE_INDEX[rid] for rid in route_ids if rid in ROUTE_INDEX]
     if not indices:
         return None, None, None
     h0_vals  = np.array([ROUTES[i]['h0']  for i in indices])
     err_vals = np.array([ROUTES[i]['err'] for i in indices])
-    sub_rho  = ROUTE_RHO[np.ix_(indices, indices)]
+    sub_rho  = rho[np.ix_(indices, indices)]
     sub_cov  = np.outer(err_vals, err_vals) * sub_rho
     try:
         sub_inv = np.linalg.inv(sub_cov)
@@ -1108,6 +1111,34 @@ heat_ax.text(0.5, 1.05, 'pairwise route tension (σ)',
              transform=heat_ax.transAxes, ha='center', va='bottom',
              fontsize=7.5, color=TEXT_DIM)
 
+# --- Sensitivity analysis: ±0.15 perturbation of each ρ_ij --------
+def _compute_sensitivity(route_ids, baseline_h0, delta=0.15):
+    """Perturb each off-diagonal ρ_ij between routes in the set by
+    ±delta and recompute the combined H0.  Returns list of
+    (rid_i, rid_j, max_|ΔH0|) sorted by influence (largest first)."""
+    indices = [ROUTE_INDEX[rid] for rid in route_ids if rid in ROUTE_INDEX]
+    if len(indices) < 2 or baseline_h0 is None:
+        return []
+    results = []
+    for i_idx, j_idx in combinations(indices, 2):
+        orig = ROUTE_RHO[i_idx, j_idx]
+        rho_up = ROUTE_RHO.copy()
+        new_up = min(0.99, orig + delta)
+        rho_up[i_idx, j_idx] = new_up
+        rho_up[j_idx, i_idx] = new_up
+        h0_up, _, _ = _custom_consensus(route_ids, rho=rho_up)
+        rho_down = ROUTE_RHO.copy()
+        new_down = max(-0.99, orig - delta)
+        rho_down[i_idx, j_idx] = new_down
+        rho_down[j_idx, i_idx] = new_down
+        h0_down, _, _ = _custom_consensus(route_ids, rho=rho_down)
+        if h0_up is None or h0_down is None:
+            continue
+        swing = max(abs(h0_up - baseline_h0), abs(h0_down - baseline_h0))
+        results.append((ROUTES[i_idx]['id'], ROUTES[j_idx]['id'], swing))
+    return sorted(results, key=lambda x: -x[2])
+
+
 # --- Leave-one-out panel (bottom-right corner) --------------------
 def _compute_loo(route_ids):
     """For each route in the iterable, compute the GLS-combined H0
@@ -1142,7 +1173,7 @@ for _s in loo_ax.spines.values():
     _s.set_color(SPINE)
     _s.set_linewidth(0.5)
 loo_title = loo_ax.text(
-    0.5, 1.05, 'LOO  (Δ from custom)',
+    0.5, 1.05, 'LOO  (ΔH₀ from custom)',
     transform=loo_ax.transAxes, ha='center', va='bottom',
     fontsize=7, color=TEXT_DIM, visible=False)
 loo_text = loo_ax.text(
@@ -1171,6 +1202,63 @@ def _update_loo_display():
         sign = '+' if dh >= 0 else '−'
         lines.append(f'{short:<10}{sign}{abs(dh):.2f}')
     loo_text.set_text('\n'.join(lines))
+
+
+# --- Sensitivity report on demand --------------------------------
+# Press 'v' (mnemonic: variance) to write a formatted table of
+# ΔH₀ vs ρ-perturbation and open it in the OS default viewer.
+def _show_sensitivity_popup():
+    if len(_custom_set) < 2:
+        info('shift-click 2+ routes first, then press v')
+        return
+    rids = list(_custom_set)
+    h0, sigma, chi2 = _custom_consensus(rids)
+    if h0 is None:
+        info('sensitivity: singular covariance, cannot compute')
+        return
+    results = _compute_sensitivity(rids, h0)
+    if not results:
+        info('sensitivity: no off-diagonal entries to perturb')
+        return
+    label_map = dict(zip([r['id'] for r in ROUTES], _HEAT_LABELS))
+    ordered = sorted(rids, key=lambda r: ROUTE_INDEX.get(r, 1e9))
+    members = ', '.join(label_map.get(r, r) for r in ordered)
+    chi_str = f'χ²/N = {chi2:.2f}' if chi2 is not None else ''
+    max_swing = max(r[2] for r in results)
+    lines = [
+        'Sensitivity analysis',
+        '====================',
+        '',
+        'For each ρ_ij between routes in the custom set, perturb by ±0.15',
+        'and recompute the GLS-combined H₀.  ΔH₀ shows how much the answer',
+        'shifts under that perturbation.  Larger swings flag entries whose',
+        'estimated value most affects the conclusion.',
+        '',
+        f'Custom set (n={len(rids)}): H₀ = {h0:.2f} ± {sigma:.2f}   {chi_str}',
+        f'  Members: {members}',
+        '',
+        f'max |ΔH₀| over all pairs: {max_swing:.3f}',
+        '',
+        f'{"Pair":<28}{"|ΔH₀|":>10}',
+        '-' * 38,
+    ]
+    for rid_i, rid_j, swing in results:
+        lab = f'{label_map.get(rid_i, rid_i)} – {label_map.get(rid_j, rid_j)}'
+        lines.append(f'{lab:<28}±{swing:>7.3f}')
+    body = '\n'.join(lines)
+    out_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        f'sensitivity_{datetime.now().strftime("%Y%m%d_%H%M%S")}.txt')
+    try:
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(body)
+    except Exception as e:
+        info(f'could not write sensitivity file: {e}')
+        return
+    if _open_externally(out_path):
+        info(f'opened {os.path.basename(out_path)} in default viewer')
+    else:
+        info(f'could not open {out_path}')
 
 
 _heat_highlights = []   # Rectangle artists outlining selected cells
@@ -1493,6 +1581,7 @@ btn_save     = mkbtn(0.06, 0.952, 0.10, 0.028, 'Save PNG')
 btn_save_pdf = mkbtn(0.17, 0.952, 0.10, 0.028, 'Save PDF')
 btn_clear    = mkbtn(0.28, 0.952, 0.09, 0.028, 'Reset')
 btn_tour     = mkbtn(0.38, 0.952, 0.09, 0.028, 'Pairs')
+btn_sens     = mkbtn(0.06, 0.905, 0.13, 0.025, 'Sensitivity')
 btn_fig1     = mkbtn(0.67, 0.905, 0.12, 0.025, 'H0DN Fig. 1')
 btn_tab4     = mkbtn(0.80, 0.905, 0.12, 0.025, 'H0DN Tab. 4')
 
@@ -1571,6 +1660,9 @@ def on_tab4(_):
 
 
 btn_tab4.on_clicked(on_tab4)
+
+
+btn_sens.on_clicked(lambda _: _show_sensitivity_popup())
 
 
 def on_clear(_):
@@ -2429,6 +2521,10 @@ def on_key_press(event):
         else:
             info('no arXiv link for this route')
         return
+    # 'v' opens the sensitivity analysis report (variance/ρ-perturb).
+    if event.key == 'v' and not popup_open:
+        _show_sensitivity_popup()
+        return
     # Up/Down arrows step through routes when one is isolated.
     if event.key in ('up', 'down') and active['id'] is not None:
         ids = [r['id'] for r in ROUTES]
@@ -2452,8 +2548,8 @@ fig.canvas.mpl_connect('key_press_event', on_key_press)
 # route line, legend entry, or H0-panel marker.
 # --------------------------------------------------------------------------
 
-DEFAULT_STATUS = ('click route to isolate · shift-click to add to custom · '
-                  'click node for info · ↗ for arXiv')
+DEFAULT_STATUS = ('click route to isolate · shift-click for custom set · '
+                  'v: sensitivity · ↗ for arXiv')
 _hover_state = {'rid': None}
 
 
@@ -2609,6 +2705,6 @@ fig.text(0.994, 0.970, 'Boston University Physics',
 
 # keep widget refs alive
 fig._keep = (btn_save, btn_save_pdf, btn_clear, btn_tour,
-             btn_fig1, btn_tab4)
+             btn_sens, btn_fig1, btn_tab4)
 
 plt.show()
