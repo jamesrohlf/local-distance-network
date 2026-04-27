@@ -2260,7 +2260,7 @@ def _open_cartoon_popup():
     # tuple is the reaction emoji shown above Adam.
     choices = [
         ('a)  Ask Dillon',   ('isolate', 'sh0es',    '😀')),
-        ('b)  Ask Jim',      ('isolate', 'desi',     '😀')),
+        ('b)  Ask Claude',   ('isolate', 'desi',     '😀')),
         ('c)  Ask Wendy',    ('isolate', 'cchp_edd', '😞')),
         ('d)  Ask Eleonora', ('eleonora', None,      '😠')),
     ]
