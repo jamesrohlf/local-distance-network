@@ -247,15 +247,16 @@ ROUTES = [
      'branches': [
          # Pop-Mix-specific TRGB→SNeII link, dashed pink (inherits popmix branch_ls)
          ['trgb', 'popmix_trgb_drop', 'popmix_trgb_angle', 'sneii'],
-         # Pop-I lines (orange, solid) — routed via Pop-I's angled path
+         # Pop-I-style cepheids→SNeII→H0 leg (orange, solid)
          {'nodes': ['cepheids', 'sneii', 'popi_h0_angle', 'h0'],
           'color': '#ee7a2a', 'ls': '-'},
+         # Geometric anchor → Cepheids calibrators (white, baseline-style)
          {'nodes': ['masers',   'sh0es_masers_bend', 'cepheids'],
-          'color': '#ee7a2a', 'ls': '-'},
+          'color': '#ffffff', 'ls': '-', 'lw': 1.4, 'alpha': 0.65},
          {'nodes': ['deb',      'sh0es_deb_bend', 'sh0es_deb_angle', 'cepheids'],
-          'color': '#ee7a2a', 'ls': '-'},
+          'color': '#ffffff', 'ls': '-', 'lw': 1.4, 'alpha': 0.65},
          {'nodes': ['parallax', 'sh0es_par_bend', 'cepheids'],
-          'color': '#ee7a2a', 'ls': '-'},
+          'color': '#ffffff', 'ls': '-', 'lw': 1.4, 'alpha': 0.65},
          # Pop-II lines (magenta, solid) — routed via Pop-II's angled path
          {'nodes': ['masers', 'cchp_masers_angle', 'trgb',
                     'sbf', 'popii_h0_angle', 'h0'],
