@@ -118,12 +118,13 @@ ROUTES = [
      'arxiv': 'https://arxiv.org/abs/2510.23823',
      'path': ['sbf', 'popii_h0_angle', 'h0'],
      'branches': [
-         ['masers', 'cchp_masers_angle', 'trgb', 'sbf'],
-         ['trgb', 'cchp_snia_angle', 'snia'],
+         ['trgb', 'sbf'],
+         ['cepheids', 'popmix_ceph_drop', 'popmix_ceph_angle', 'sbf'],
          ['masers',   'sh0es_masers_bend', 'cepheids', 'snia'],
          ['deb',      'sh0es_deb_bend', 'sh0es_deb_angle', 'cepheids'],
          ['parallax', 'sh0es_par_bend', 'cepheids'],
          ['snia',     'h0'],
+         ['masers', 'mcp_top', 'mcp_far_right', 'h0'],
      ]},
     {'id': 'v01',    'name': 'Baseline + JAGB',  'color': '#ff5577',
      'h0': 73.49, 'err': 0.82,
@@ -132,9 +133,9 @@ ROUTES = [
      'branches': [
          {'nodes': ['sbf', 'popii_h0_angle', 'h0'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
-         {'nodes': ['masers', 'cchp_masers_angle', 'trgb', 'sbf'],
+         {'nodes': ['trgb', 'sbf'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
-         {'nodes': ['trgb', 'cchp_snia_angle', 'snia'],
+         {'nodes': ['cepheids', 'popmix_ceph_drop', 'popmix_ceph_angle', 'sbf'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
          {'nodes': ['masers', 'sh0es_masers_bend', 'cepheids', 'snia'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
@@ -143,6 +144,8 @@ ROUTES = [
          {'nodes': ['parallax', 'sh0es_par_bend', 'cepheids'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
          {'nodes': ['snia', 'h0'],
+          'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
+         {'nodes': ['masers', 'mcp_top', 'mcp_far_right', 'h0'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
      ]},
     {'id': 'v02',    'name': 'Baseline + Miras', 'color': '#a00000',
@@ -151,9 +154,9 @@ ROUTES = [
      'branches': [
          {'nodes': ['sbf', 'popii_h0_angle', 'h0'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
-         {'nodes': ['masers', 'cchp_masers_angle', 'trgb', 'sbf'],
+         {'nodes': ['trgb', 'sbf'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
-         {'nodes': ['trgb', 'cchp_snia_angle', 'snia'],
+         {'nodes': ['cepheids', 'popmix_ceph_drop', 'popmix_ceph_angle', 'sbf'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
          {'nodes': ['masers', 'sh0es_masers_bend', 'cepheids', 'snia'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
@@ -162,6 +165,8 @@ ROUTES = [
          {'nodes': ['parallax', 'sh0es_par_bend', 'cepheids'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
          {'nodes': ['snia', 'h0'],
+          'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
+         {'nodes': ['masers', 'mcp_top', 'mcp_far_right', 'h0'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
      ]},
     {'id': 'v06',    'name': 'Baseline + TF', 'color': '#a892d4',
@@ -174,9 +179,9 @@ ROUTES = [
          # baseline calibration ladder — white
          {'nodes': ['sbf', 'popii_h0_angle', 'h0'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
-         {'nodes': ['masers', 'cchp_masers_angle', 'trgb', 'sbf'],
+         {'nodes': ['trgb', 'sbf'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
-         {'nodes': ['trgb', 'cchp_snia_angle', 'snia'],
+         {'nodes': ['cepheids', 'popmix_ceph_drop', 'popmix_ceph_angle', 'sbf'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
          {'nodes': ['masers', 'sh0es_masers_bend', 'cepheids', 'snia'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
@@ -185,6 +190,8 @@ ROUTES = [
          {'nodes': ['parallax', 'sh0es_par_bend', 'cepheids'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
          {'nodes': ['snia', 'h0'],
+          'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
+         {'nodes': ['masers', 'mcp_top', 'mcp_far_right', 'h0'],
           'color': '#ffffff', 'lw': 1.4, 'alpha': 0.65},
      ]},
     {'id': 'sh0es',   'name': 'SH0ES',    'color': '#2a5fd9', 'h0': 73.04, 'err': 1.04,
@@ -2320,9 +2327,11 @@ def _open_cartoon_popup():
 
 
 def _open_node_popup(node_id):
-    if node_id == 'h0':
-        _open_cartoon_popup()
-        return
+    # Easter-egg cartoon popup ("Adam wants to go to H...") — disabled.
+    # Re-enable by uncommenting the block below.
+    # if node_id == 'h0':
+    #     _open_cartoon_popup()
+    #     return
     path = _node_info_path(node_id)
     label = NODES[node_id][2].replace('\n', ' ').strip() or node_id
     if not path:
